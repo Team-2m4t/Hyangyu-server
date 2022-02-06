@@ -43,7 +43,6 @@ public class User {
 	
 	private String sub;
 	
-	@NotNull
 	private String token;
 	
 	@Column(length = 50)
@@ -74,6 +73,10 @@ public class User {
 	
 	public void setUsername(String username) {
 		this.username = username;
+	}
+	
+	public void setToken(String token) {
+		this.token = token;
 	}
 			
 }

@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.Optional;
 
 import hyangyu.server.dto.ResponseDto;
+import hyangyu.server.dto.TokenDto;
 import hyangyu.server.dto.UserDto;
 import hyangyu.server.domain.Authority;
 import hyangyu.server.domain.User;
@@ -75,6 +76,14 @@ public class UserService {
     	userRepository.deleteById(userDto.getUserId());
     	return new ResponseDto(HttpStatus.OK.value(),"회원 탈퇴가 완료되었습니다");
     }
+    
+    @Transactional
+    public ResponseDto saveMyUserToken(UserDto userDto, TokenDto token) {
+    	User user = userRepository.findById(userDto.getUserId())
+    			.orElseThrow(()->new IllegalArgumentException("해당 회원이 존재하지 않습니다. id=" + userDto.getUserId()));
+    	user.setToken(token.getToken());
+    	return new ResponseDto(HttpStatus.OK.value(), userDto.getUserId()+" 푸시 토큰 저장 완료");
+    }
 
     @Transactional(readOnly = true)
     public UserDto getUserWithAuthorities(String email) {
@@ -85,5 +94,5 @@ public class UserService {
     public UserDto getMyUserWithAuthorities() {
         return UserDto.from(SecurityUtil.getCurrentEmail().flatMap(userRepository::findByEmail).orElse(null));
     }
-
+    
 }

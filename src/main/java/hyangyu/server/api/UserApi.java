@@ -2,14 +2,13 @@ package hyangyu.server.api;
 
 import hyangyu.server.dto.ModificationDto;
 import hyangyu.server.dto.ResponseDto;
+import hyangyu.server.dto.TokenDto;
 import hyangyu.server.dto.UserDto;
 import hyangyu.server.domain.User;
 import hyangyu.server.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import com.fasterxml.jackson.databind.node.TextNode;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -67,5 +66,11 @@ public class UserApi {
     public ResponseEntity<ResponseDto> deleteMyUser(HttpServletRequest request){
     	UserDto userDto = userService.getMyUserWithAuthorities();
     	return ResponseEntity.ok(userService.deleteMyUser(userDto));
+    }
+    
+    @PostMapping("/user/saveToken")
+    public ResponseEntity<ResponseDto> saveMyUserToken(HttpServletRequest request, @RequestBody TokenDto token){
+    	UserDto userDto = userService.getMyUserWithAuthorities();
+    	return ResponseEntity.ok(userService.saveMyUserToken(userDto, token));
     }
 }
