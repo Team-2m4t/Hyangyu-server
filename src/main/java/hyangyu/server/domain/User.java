@@ -43,6 +43,7 @@ public class User {
 	
 	private String sub;
 	
+	@NotNull
 	private String token;
 	
 	@Column(length = 50)
