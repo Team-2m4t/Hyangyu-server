@@ -1,10 +1,13 @@
 package hyangyu.server.repository;
 
 import hyangyu.server.domain.Fair;
+import hyangyu.server.dto.EventDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -18,5 +21,16 @@ public class FairRepository {
 
     public Optional<Fair> findOne(Long fairId) {
         return Optional.ofNullable(em.find(Fair.class, fairId));
+    }
+
+    public List<EventDto> getAllFair() {
+        List<Fair> fair = em.createQuery("select d from Fair d", Fair.class)
+                .getResultList();
+        List<EventDto> resultList = new ArrayList<>();
+        for (Fair d : fair) {
+            resultList.add(new EventDto(d));
+        }
+
+        return resultList;
     }
 }
