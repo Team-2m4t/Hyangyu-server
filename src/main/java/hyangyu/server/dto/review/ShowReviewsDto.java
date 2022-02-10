@@ -1,4 +1,4 @@
-package hyangyu.server.dto;
+package hyangyu.server.dto.review;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,7 +7,6 @@ import java.util.List;
 
 @Data
 @AllArgsConstructor
-public class ReviewsResponseDto {
-    int status;
-    List<ReviewDto> data;
+public class ShowReviewsDto {
+    List<ReviewDto> reviews;
 }

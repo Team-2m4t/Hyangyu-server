@@ -4,8 +4,8 @@ import hyangyu.server.domain.Display;
 import hyangyu.server.domain.DisplayReview;
 import hyangyu.server.domain.DisplayWarn;
 import hyangyu.server.domain.User;
-import hyangyu.server.dto.RequestReviewDto;
-import hyangyu.server.dto.ReviewDto;
+import hyangyu.server.dto.review.RequestReviewDto;
+import hyangyu.server.dto.review.ReviewDto;
 import hyangyu.server.repository.DisplayRepository;
 import hyangyu.server.repository.DisplayReviewRepository;
 import hyangyu.server.repository.DisplayWarnRepository;
@@ -13,7 +13,6 @@ import hyangyu.server.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.time.LocalDateTime;
 import java.util.List;

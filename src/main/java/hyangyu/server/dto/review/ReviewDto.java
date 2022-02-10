@@ -1,4 +1,4 @@
-package hyangyu.server.dto;
+package hyangyu.server.dto.review;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
