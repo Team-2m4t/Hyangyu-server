@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,9 +18,9 @@ public class SearchApi {
 
     private final SearchService searchService;
 
-    @GetMapping("/search")
-    public ResponseEntity getSearchDate() throws Exception {
-        SearchResponseDto searchData = searchService.getSearchData();
+    @GetMapping("/search/{keyword}")
+    public ResponseEntity getSearchDate(@PathVariable String keyword) throws Exception {
+        SearchResponseDto searchData = searchService.getSearchData(keyword);
         SearchDto searchDto = new SearchDto(200, searchData);
         return new ResponseEntity(searchDto, HttpStatus.OK);
     }
