@@ -1,13 +1,11 @@
-package hyangyu.server.dto.event;
+package hyangyu.server.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class MyPageResponseDto {
-
+public class MyReviewsResponseDto {
     int status;
-    MyPageDto data;
-
+    MyReviewsDto data;
 }

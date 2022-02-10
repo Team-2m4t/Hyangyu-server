@@ -1,6 +1,8 @@
 package hyangyu.server.api;
 
 import hyangyu.server.dto.ErrorDto;
+import hyangyu.server.dto.MyPageDto;
+import hyangyu.server.dto.MyPageResponseDto;
 import hyangyu.server.dto.UserDto;
 import hyangyu.server.dto.event.*;
 import hyangyu.server.service.MyPageService;
@@ -31,10 +33,7 @@ public class MyPageApi {
         if(user == null) {
             return new ResponseEntity(new ErrorDto(401, "유효하지 않은 사용자입니다."), HttpStatus.BAD_REQUEST);
         }
-
-        MyPageDto myPageDto = myPageService.getMyPage(user.getUserId());
-        myPageDto.setImage(user.getImage());
-        myPageDto.setUsername(user.getUsername());
+        MyPageDto myPageDto = new MyPageDto(user.getImage(), user.getUsername());
         MyPageResponseDto myPageResponseDto = new MyPageResponseDto(200, myPageDto);
         return new ResponseEntity<>(myPageResponseDto, httpHeaders, HttpStatus.OK);
     }

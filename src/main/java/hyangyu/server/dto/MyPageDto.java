@@ -1,4 +1,4 @@
-package hyangyu.server.dto.event;
+package hyangyu.server.dto;
 
 import hyangyu.server.dto.EventDto;
 import lombok.AllArgsConstructor;
@@ -13,9 +13,4 @@ import java.util.List;
 public class MyPageDto {
     private String image;
     private String username;
-    private List<EventDto> displays;
-
-    public MyPageDto(List<EventDto> displays) {
-        this.displays = displays;
-    }
 }

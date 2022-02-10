@@ -5,6 +5,7 @@ import hyangyu.server.domain.FairReview;
 import hyangyu.server.domain.FairWarn;
 import hyangyu.server.domain.User;
 import hyangyu.server.dto.RequestReviewDto;
+import hyangyu.server.dto.ReviewDto;
 import hyangyu.server.repository.FairRepository;
 import hyangyu.server.repository.FairReviewRepository;
 import hyangyu.server.repository.FairWarnRepository;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -31,7 +33,7 @@ public class FairReviewService {
         Optional<Fair> fair = fairRepository.findOne(fairId);
         int count = fairReviewRepository.getCount(fair.get().getFairId(), user.get().getUserId());
         if (count == 0) {
-            FairReview fairReview = FairReview.createFairReview(user.get(), fair.get(), user.get().getUsername(), LocalDateTime.now(), requestReviewDto.getContent(), requestReviewDto.getScore(), 0);
+            FairReview fairReview = FairReview.createFairReview(user.get(), fair.get(), LocalDateTime.now(), requestReviewDto.getContent(), requestReviewDto.getScore(), 0);
             FairReview savedFairReview = fairReviewRepository.save(fairReview);
             return savedFairReview.getReviewId();
         } else {
@@ -77,5 +79,9 @@ public class FairReviewService {
         }
 
         return "신고가 완료되었습니다.";
+    }
+
+    public List<ReviewDto> getMyFairReviews(Long userId) {
+        return fairReviewRepository.getMyFairReviews(userId);
     }
 }

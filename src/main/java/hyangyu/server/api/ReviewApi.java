@@ -358,4 +358,21 @@ public class ReviewApi {
         ReviewsResponseDto reviewResponseDto = new ReviewsResponseDto(200, displayReviews);
         return new ResponseEntity(reviewResponseDto, HttpStatus.OK);
     }
+
+    @GetMapping("/myreview")
+    public ResponseEntity getMyReviews() throws Exception {
+        //사용자 검색
+        UserDto user = userService.getMyUserWithAuthorities();
+        if (user == null) {
+            return new ResponseEntity(new ErrorDto(401, "유효하지 않은 사용자입니다."), HttpStatus.BAD_REQUEST);
+        }
+
+        List<ReviewDto> myDisplayReviews = displayReviewService.getMyDisplayReviews(user.getUserId());
+        List<ReviewDto> myFairReviews = fairReviewService.getMyFairReviews(user.getUserId());
+        List<ReviewDto> myFestivalReviews = festivalReviewService.getMyFestivalReviews(user.getUserId());
+
+        MyReviewsDto myReviewsDto = new MyReviewsDto(myDisplayReviews, myFairReviews, myFestivalReviews);
+        MyReviewsResponseDto myReviewsResponseDto = new MyReviewsResponseDto(200, myReviewsDto);
+        return new ResponseEntity(myReviewsResponseDto, HttpStatus.OK);
+    }
 }

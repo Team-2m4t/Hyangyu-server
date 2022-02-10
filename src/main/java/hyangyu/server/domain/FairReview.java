@@ -35,10 +35,6 @@ public class FairReview {
     private List<FairWarn> warnList = new ArrayList<>();
 
     @NotNull
-    @Column(length = 20)
-    private String nickname;
-
-    @NotNull
     @JsonFormat(pattern = "yyyy/MM/dd HH:mm", timezone = "Asia/Seoul")
     private LocalDateTime createTime;
 
@@ -53,11 +49,10 @@ public class FairReview {
     private Integer warn;
 
     // 생성 메서드
-    public static FairReview createFairReview(User user, Fair fair, String nickname, LocalDateTime createTime, String content, Integer score, Integer warn) {
+    public static FairReview createFairReview(User user, Fair fair, LocalDateTime createTime, String content, Integer score, Integer warn) {
         FairReview fairReview = new FairReview();
         fairReview.user = user;
         fairReview.fair = fair;
-        fairReview.nickname = nickname;
         fairReview.createTime = createTime;
         fairReview.content = content;
         fairReview.score = score;

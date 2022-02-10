@@ -39,7 +39,7 @@ class DisplayReviewTest {
         em.persist(display);
 
         //when
-        DisplayReview displayReview = DisplayReview.createDisplayReview(user, display, user.getUsername(), LocalDateTime.now(), "내용", 5, 0);
+        DisplayReview displayReview = DisplayReview.createDisplayReview(user, display, LocalDateTime.now(), "내용", 5, 0);
         DisplayReview savedDisplayReview = displayReviewRepository.save(displayReview);
         int count = displayReviewRepository.getCount(display.getDisplayId(), user.getUserId());
 
@@ -60,7 +60,7 @@ class DisplayReviewTest {
         Display display = Display.createDisplay(eventDto);
         em.persist(display);
 
-        DisplayReview displayReview = DisplayReview.createDisplayReview(user, display, user.getUsername(), LocalDateTime.now(), "내용", 5, 0);
+        DisplayReview displayReview = DisplayReview.createDisplayReview(user, display, LocalDateTime.now(), "내용", 5, 0);
         DisplayReview savedDisplayReview = displayReviewRepository.save(displayReview);
 
         //when
@@ -85,7 +85,7 @@ class DisplayReviewTest {
         Display display = Display.createDisplay(eventDto);
         em.persist(display);
 
-        DisplayReview displayReview = DisplayReview.createDisplayReview(user, display, user.getUsername(), LocalDateTime.now(), "내용", 5, 0);
+        DisplayReview displayReview = DisplayReview.createDisplayReview(user, display, LocalDateTime.now(), "내용", 5, 0);
         displayReviewRepository.save(displayReview);
 
         //when

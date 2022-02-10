@@ -32,10 +32,6 @@ public class DisplayReview {
     private List<DisplayWarn> warnList = new ArrayList<>();
 
     @NotNull
-    @Column(length = 20)
-    private String nickname;
-
-    @NotNull
     @JsonFormat(pattern = "yyyy/MM/dd HH:mm", timezone = "Asia/Seoul")
     private LocalDateTime createTime;
 
@@ -50,11 +46,10 @@ public class DisplayReview {
     private Integer warn;
 
     // 생성 메서드
-    public static DisplayReview createDisplayReview(User user, Display display, String nickname, LocalDateTime createTime, String content, Integer score, Integer warn) {
+    public static DisplayReview createDisplayReview(User user, Display display, LocalDateTime createTime, String content, Integer score, Integer warn) {
         DisplayReview displayReview = new DisplayReview();
         displayReview.user = user;
         displayReview.display = display;
-        displayReview.nickname = nickname;
         displayReview.createTime = createTime;
         displayReview.content = content;
         displayReview.score = score;

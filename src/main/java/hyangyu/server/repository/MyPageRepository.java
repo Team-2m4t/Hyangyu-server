@@ -6,7 +6,7 @@ import hyangyu.server.dto.EventDto;
 import hyangyu.server.dto.event.DisplayDto;
 import hyangyu.server.dto.event.FairDto;
 import hyangyu.server.dto.event.FestivalDto;
-import hyangyu.server.dto.event.MyPageDto;
+import hyangyu.server.dto.MyPageDto;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -27,6 +27,8 @@ public class MyPageRepository {
         this.queryFactory = new JPAQueryFactory(em);
     }
 
+    /*
+    기획 발표회 이후에 수정
     public MyPageDto getMyPage(Long userId) {
 
         List<Display> displays = queryFactory.select(favoriteDisplay.display)
@@ -48,6 +50,7 @@ public class MyPageRepository {
         return myPageDto;
 
     }
+     */
 
     public DisplayDto getMyDisplay(Long userId, int page) {
 

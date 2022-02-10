@@ -34,7 +34,7 @@ public class DisplayReviewService {
         Optional<Display> display = displayRepository.findOne(displayId);
         int count = displayReviewRepository.getCount(display.get().getDisplayId(), user.get().getUserId());
         if (count == 0) {
-            DisplayReview displayReview = DisplayReview.createDisplayReview(user.get(), display.get(), user.get().getUsername(), LocalDateTime.now(), requestReviewDto.getContent(), requestReviewDto.getScore(), 0);
+            DisplayReview displayReview = DisplayReview.createDisplayReview(user.get(), display.get(), LocalDateTime.now(), requestReviewDto.getContent(), requestReviewDto.getScore(), 0);
             DisplayReview savedDisplayReview = displayReviewRepository.save(displayReview);
             return savedDisplayReview.getReviewId();
         } else {
@@ -84,5 +84,9 @@ public class DisplayReviewService {
 
     public List<ReviewDto> getDisplayReviews(Long displayId) {
         return displayReviewRepository.getDisplayReviews(displayId);
+    }
+
+    public List<ReviewDto> getMyDisplayReviews(Long userId) {
+        return displayReviewRepository.getMyDisplayReviews(userId);
     }
 }
