@@ -25,8 +25,9 @@ public class FestivalRepository {
         return Optional.ofNullable(em.find(Festival.class, festivalId));
     }
 
-    public List<EventDto> getAllFestival() {
-        List<Festival> festival = em.createQuery("select d from Festival d", Festival.class)
+    public List<EventDto> findFestivals(String keyword) {
+        List<Festival> festival = em.createQuery("select d from Festival d where d.title like CONCAT('%', :keyword, '%')", Festival.class)
+                .setParameter("keyword", keyword)
                 .getResultList();
         List<EventDto> resultList = new ArrayList<>();
         for (Festival d : festival) {

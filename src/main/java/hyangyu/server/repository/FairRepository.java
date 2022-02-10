@@ -23,8 +23,9 @@ public class FairRepository {
         return Optional.ofNullable(em.find(Fair.class, fairId));
     }
 
-    public List<EventDto> getAllFair() {
-        List<Fair> fair = em.createQuery("select d from Fair d", Fair.class)
+    public List<EventDto> findFairs(String keyword) {
+        List<Fair> fair = em.createQuery("select d from Fair d where d.title like CONCAT('%', :keyword, '%')", Fair.class)
+                .setParameter("keyword", keyword)
                 .getResultList();
         List<EventDto> resultList = new ArrayList<>();
         for (Fair d : fair) {
