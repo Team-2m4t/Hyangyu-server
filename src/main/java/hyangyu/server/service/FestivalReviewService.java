@@ -1,8 +1,8 @@
 package hyangyu.server.service;
 
 import hyangyu.server.domain.*;
-import hyangyu.server.dto.RequestReviewDto;
-import hyangyu.server.dto.ReviewDto;
+import hyangyu.server.dto.review.RequestReviewDto;
+import hyangyu.server.dto.review.ReviewDto;
 import hyangyu.server.repository.FestivalRepository;
 import hyangyu.server.repository.FestivalReviewRepository;
 import hyangyu.server.repository.FestivalWarnRepository;
