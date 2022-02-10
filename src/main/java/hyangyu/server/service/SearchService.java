@@ -21,10 +21,10 @@ public class SearchService {
     private final FairRepository fairRepository;
     private final FestivalRepository festivalRepository;
 
-    public SearchResponseDto getSearchData() {
-        List<EventDto> allDisplay = displayRepository.getAllDisplay();
-        List<EventDto> allFair = fairRepository.getAllFair();
-        List<EventDto> allFestival = festivalRepository.getAllFestival();
+    public SearchResponseDto getSearchData(String keyword) {
+        List<EventDto> allDisplay = displayRepository.findDisplays(keyword);
+        List<EventDto> allFair = fairRepository.findFairs(keyword);
+        List<EventDto> allFestival = festivalRepository.findFestivals(keyword);
         return new SearchResponseDto(allDisplay, allFair, allFestival);
     }
 }
