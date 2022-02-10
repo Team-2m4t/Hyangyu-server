@@ -41,35 +41,29 @@ public class DisplayRepository {
             displays = queryFactory.select(display)
                     .from(display)
                     .orderBy(display.startDate.desc())
-                    .offset(page*10)
+                    .offset(page * 10)
                     .limit(10)
                     .fetch();
 
-        }
-
-        else if (order.equals("popularity")) {
+        } else if (order.equals("popularity")) {
             displays = queryFactory.select(display)
                     .from(display)
                     .orderBy(display.likey.desc())
-                    .offset(page*10)
+                    .offset(page * 10)
                     .limit(10)
                     .fetch();
-        }
-
-        else if (order.equals("charge")) {
+        } else if (order.equals("charge")) {
             displays = queryFactory.select(display)
                     .from(display)
                     .where(display.price.gt(0))
-                    .offset(page*10)
+                    .offset(page * 10)
                     .limit(10)
                     .fetch();
-        }
-
-        else if (order.equals("free")) {
+        } else if (order.equals("free")) {
             displays = queryFactory.select(display)
                     .from(display)
                     .where(display.price.eq(0))
-                    .offset(page*10)
+                    .offset(page * 10)
                     .limit(10)
                     .fetch();
         }
@@ -82,5 +76,17 @@ public class DisplayRepository {
         }
 
         return new DisplayDto(displayList);
+    }
+
+    public List<EventDto> findDisplays(String keyword) {
+        List<Display> display = em.createQuery("select d from Display d where d.title like CONCAT('%', :keyword, '%')", Display.class)
+                .setParameter("keyword", keyword)
+                .getResultList();
+        List<EventDto> resultList = new ArrayList<>();
+        for (Display d : display) {
+            resultList.add(new EventDto(d));
+        }
+
+        return resultList;
     }
 }
