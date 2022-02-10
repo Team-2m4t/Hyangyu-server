@@ -7,7 +7,6 @@ import java.util.List;
 
 @Data
 @AllArgsConstructor
-public class ReviewsResponseDto {
-    int status;
-    ShowReviewsDto data;
+public class ShowReviewsDto {
+    List<ReviewDto> reviews;
 }
