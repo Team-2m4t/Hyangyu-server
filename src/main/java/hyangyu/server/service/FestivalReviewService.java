@@ -25,17 +25,15 @@ public class FestivalReviewService {
     private final UserRepository userRepository;
     private final FestivalRepository festivalRepository;
 
-    public Long saveFestivalReview(Long userId, Long festivalId, RequestReviewDto requestReviewDto) {
+    public int saveFestivalReview(Long userId, Long festivalId, RequestReviewDto requestReviewDto) {
         Optional<User> user = userRepository.findById(userId);
         Optional<Festival> festival = festivalRepository.findOne(festivalId);
         int count = festivalReviewRepository.getCount(festival.get().getFestivalId(), user.get().getUserId());
         if (count == 0) {
             FestivalReview festivalReview = FestivalReview.createFestivalReview(user.get(), festival.get(), LocalDateTime.now(), requestReviewDto.getContent(), requestReviewDto.getScore(), 0);
             FestivalReview savedFestivalReview = festivalReviewRepository.save(festivalReview);
-            return savedFestivalReview.getReviewId();
-        } else {
-            return -1L;
         }
+        return count;
     }
 
     public Optional<FestivalReview> modifyFestivalReview(Long userId, Long festivalId, RequestReviewDto requestReviewDto) {

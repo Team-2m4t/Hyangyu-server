@@ -28,17 +28,15 @@ public class FairReviewService {
     private final UserRepository userRepository;
     private final FairRepository fairRepository;
 
-    public Long saveFairReview(Long userId, Long fairId, RequestReviewDto requestReviewDto) {
+    public int saveFairReview(Long userId, Long fairId, RequestReviewDto requestReviewDto) {
         Optional<User> user = userRepository.findById(userId);
         Optional<Fair> fair = fairRepository.findOne(fairId);
         int count = fairReviewRepository.getCount(fair.get().getFairId(), user.get().getUserId());
         if (count == 0) {
             FairReview fairReview = FairReview.createFairReview(user.get(), fair.get(), LocalDateTime.now(), requestReviewDto.getContent(), requestReviewDto.getScore(), 0);
             FairReview savedFairReview = fairReviewRepository.save(fairReview);
-            return savedFairReview.getReviewId();
-        } else {
-            return -1L;
         }
+        return count;
     }
 
     public Optional<FairReview> modifyFairReview(Long userId, Long fairId, RequestReviewDto requestReviewDto) {
