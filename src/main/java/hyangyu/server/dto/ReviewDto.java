@@ -10,6 +10,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class ReviewDto {
 
+    Long reviewId;
+
     String photo;
 
     String username;

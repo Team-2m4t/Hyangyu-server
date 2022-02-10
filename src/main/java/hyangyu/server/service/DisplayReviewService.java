@@ -29,17 +29,15 @@ public class DisplayReviewService {
     private final UserRepository userRepository;
     private final DisplayRepository displayRepository;
 
-    public Long saveDisplayReview(Long userId, Long displayId, RequestReviewDto requestReviewDto) {
+    public int saveDisplayReview(Long userId, Long displayId, RequestReviewDto requestReviewDto) {
         Optional<User> user = userRepository.findById(userId);
         Optional<Display> display = displayRepository.findOne(displayId);
         int count = displayReviewRepository.getCount(display.get().getDisplayId(), user.get().getUserId());
         if (count == 0) {
             DisplayReview displayReview = DisplayReview.createDisplayReview(user.get(), display.get(), LocalDateTime.now(), requestReviewDto.getContent(), requestReviewDto.getScore(), 0);
             DisplayReview savedDisplayReview = displayReviewRepository.save(displayReview);
-            return savedDisplayReview.getReviewId();
-        } else {
-            return -1L;
         }
+        return count;
     }
 
     public Optional<DisplayReview> modifyDisplayReview(Long userId, Long displayId, RequestReviewDto requestReviewDto) {

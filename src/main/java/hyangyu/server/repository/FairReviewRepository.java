@@ -15,6 +15,6 @@ public interface FairReviewRepository extends JpaRepository<FairReview, Long> {
     @Query("select r from FairReview r where r.fair.fairId=?1 and r.user.userId=?2")
     public FairReview getFairReview(Long fairId, Long userId);
 
-    @Query("select new hyangyu.server.dto.ReviewDto(r.user.image, r.user.username, r.createTime, r.content, r.score) from FairReview r where r.user.userId=?1  order by r.createTime desc")
+    @Query("select new hyangyu.server.dto.ReviewDto(r.reviewId, r.user.image, r.user.username, r.createTime, r.content, r.score) from FairReview r where r.user.userId=?1  order by r.createTime desc")
     public List<ReviewDto> getMyFairReviews(Long userId);
 }
