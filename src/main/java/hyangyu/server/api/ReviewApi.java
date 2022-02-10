@@ -356,7 +356,8 @@ public class ReviewApi {
         }
 
         List<ReviewDto> displayReviews = displayReviewService.getDisplayReviews(displayId);
-        ReviewsResponseDto reviewResponseDto = new ReviewsResponseDto(200, displayReviews);
+        ShowReviewsDto showReviewsDto = new ShowReviewsDto(displayReviews);
+        ReviewsResponseDto reviewResponseDto = new ReviewsResponseDto(200, showReviewsDto);
         return new ResponseEntity(reviewResponseDto, HttpStatus.OK);
     }
 
