@@ -8,7 +8,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 public class MyReviewsDto {
-    List<ReviewDto> displays;
-    List<ReviewDto> fairs;
-    List<ReviewDto> festivals;
+    List<MyReviewDto> displays;
+    List<MyReviewDto> fairs;
+    List<MyReviewDto> festivals;
 }

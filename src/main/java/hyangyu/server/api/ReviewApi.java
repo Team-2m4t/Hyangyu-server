@@ -369,9 +369,9 @@ public class ReviewApi {
             return new ResponseEntity(new ErrorDto(401, "유효하지 않은 사용자입니다."), HttpStatus.BAD_REQUEST);
         }
 
-        List<ReviewDto> myDisplayReviews = displayReviewService.getMyDisplayReviews(user.getUserId());
-        List<ReviewDto> myFairReviews = fairReviewService.getMyFairReviews(user.getUserId());
-        List<ReviewDto> myFestivalReviews = festivalReviewService.getMyFestivalReviews(user.getUserId());
+        List<MyReviewDto> myDisplayReviews = displayReviewService.getMyDisplayReviews(user.getUserId());
+        List<MyReviewDto> myFairReviews = fairReviewService.getMyFairReviews(user.getUserId());
+        List<MyReviewDto> myFestivalReviews = festivalReviewService.getMyFestivalReviews(user.getUserId());
 
         MyReviewsDto myReviewsDto = new MyReviewsDto(myDisplayReviews, myFairReviews, myFestivalReviews);
         MyReviewsResponseDto myReviewsResponseDto = new MyReviewsResponseDto(200, myReviewsDto);

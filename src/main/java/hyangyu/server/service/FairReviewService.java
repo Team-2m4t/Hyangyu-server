@@ -4,6 +4,7 @@ import hyangyu.server.domain.Fair;
 import hyangyu.server.domain.FairReview;
 import hyangyu.server.domain.FairWarn;
 import hyangyu.server.domain.User;
+import hyangyu.server.dto.review.MyReviewDto;
 import hyangyu.server.dto.review.RequestReviewDto;
 import hyangyu.server.dto.review.ReviewDto;
 import hyangyu.server.repository.FairRepository;
@@ -79,7 +80,7 @@ public class FairReviewService {
         return "신고가 완료되었습니다.";
     }
 
-    public List<ReviewDto> getMyFairReviews(Long userId) {
+    public List<MyReviewDto> getMyFairReviews(Long userId) {
         return fairReviewRepository.getMyFairReviews(userId);
     }
 }
