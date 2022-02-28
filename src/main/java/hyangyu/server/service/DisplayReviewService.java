@@ -4,6 +4,7 @@ import hyangyu.server.domain.Display;
 import hyangyu.server.domain.DisplayReview;
 import hyangyu.server.domain.DisplayWarn;
 import hyangyu.server.domain.User;
+import hyangyu.server.dto.review.MyReviewDto;
 import hyangyu.server.dto.review.RequestReviewDto;
 import hyangyu.server.dto.review.ReviewDto;
 import hyangyu.server.repository.DisplayRepository;
@@ -83,7 +84,7 @@ public class DisplayReviewService {
         return displayReviewRepository.getDisplayReviews(displayId);
     }
 
-    public List<ReviewDto> getMyDisplayReviews(Long userId) {
+    public List<MyReviewDto> getMyDisplayReviews(Long userId) {
         return displayReviewRepository.getMyDisplayReviews(userId);
     }
 }
