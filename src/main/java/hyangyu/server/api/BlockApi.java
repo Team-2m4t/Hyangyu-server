@@ -29,7 +29,7 @@ import hyangyu.server.service.UserService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/user")
 @RequiredArgsConstructor
 public class BlockApi {
 	private final UserRepository userRepository;
@@ -62,7 +62,7 @@ public class BlockApi {
         return new ResponseEntity<>(responseDto, httpHeaders, HttpStatus.OK);
     }
     
-    @DeleteMapping("/unblock/{reportedId}")
+    @DeleteMapping("/block/{reportedId}")
     public ResponseEntity deleteBlock(@PathVariable Long reportedId) throws Exception {
     	 HttpHeaders httpHeaders = new HttpHeaders();
     	 
