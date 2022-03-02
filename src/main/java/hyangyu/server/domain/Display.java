@@ -1,6 +1,6 @@
 package hyangyu.server.domain;
 
-import hyangyu.server.dto.TestEventDto;
+import hyangyu.server.dto.event.TestEventDto;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

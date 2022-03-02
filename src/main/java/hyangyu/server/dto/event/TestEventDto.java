@@ -1,4 +1,4 @@
-package hyangyu.server.dto;
+package hyangyu.server.dto.event;
 import hyangyu.server.domain.Display;
 import lombok.AllArgsConstructor;
 import lombok.Data;

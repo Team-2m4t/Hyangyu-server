@@ -3,6 +3,7 @@ package hyangyu.server.service;
 import hyangyu.server.domain.Display;
 import hyangyu.server.domain.FavoriteDisplay;
 import hyangyu.server.domain.User;
+import hyangyu.server.dto.event.DisplayDto;
 import hyangyu.server.repository.DisplayRepository;
 import hyangyu.server.repository.FavoriteDisplayRepository;
 import hyangyu.server.repository.UserRepository;
@@ -44,4 +45,11 @@ public class FavoriteDisplayService {
         }
         return result;
     }
+
+    public DisplayDto getFavoriteDisplay(Long userId, int page) {
+        DisplayDto myDisplayDto = favoriteDisplayRepository.getFavoriteDisplay(userId, page);
+        return myDisplayDto;
+    }
+
+
 }

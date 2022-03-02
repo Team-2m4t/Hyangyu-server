@@ -1,4 +1,4 @@
-package hyangyu.server.dto;
+package hyangyu.server.dto.mypage;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

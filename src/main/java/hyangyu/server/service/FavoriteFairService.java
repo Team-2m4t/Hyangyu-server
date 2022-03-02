@@ -1,6 +1,7 @@
 package hyangyu.server.service;
 
 import hyangyu.server.domain.*;
+import hyangyu.server.dto.event.FairDto;
 import hyangyu.server.repository.FairRepository;
 import hyangyu.server.repository.FavoriteFairRepository;
 import hyangyu.server.repository.UserRepository;
@@ -42,4 +43,10 @@ public class FavoriteFairService {
         }
         return result;
     }
+
+    public FairDto getFavoriteFair(Long userId, int page) {
+        FairDto myFairDto = favoriteFairRepository.getFavoriteFair(userId, page);
+        return myFairDto;
+    }
+
 }

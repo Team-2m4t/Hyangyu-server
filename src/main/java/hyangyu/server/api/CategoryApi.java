@@ -4,7 +4,6 @@ import hyangyu.server.dto.ErrorDto;
 import hyangyu.server.dto.UserDto;
 import hyangyu.server.dto.event.*;
 import hyangyu.server.repository.DisplayRepository;
-import hyangyu.server.service.MyPageService;
 import hyangyu.server.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -38,9 +37,9 @@ public class CategoryApi {
             return new ResponseEntity(new ErrorDto(404, "파라미터를 확인해주세요."), HttpStatus.BAD_REQUEST);
         }
 
-        DisplayDto myDisplay = displayRepository.getDisplay(user.getUserId(), order, page);
+        DisplayDto displays = displayRepository.getDisplay(user.getUserId(), order, page);
 
-        DisplayResponseDto myPageResponseDto = new DisplayResponseDto(200, myDisplay);
+        DisplayResponseDto myPageResponseDto = new DisplayResponseDto(200, displays);
         return new ResponseEntity<>(myPageResponseDto, httpHeaders, HttpStatus.OK);
     }
 }
