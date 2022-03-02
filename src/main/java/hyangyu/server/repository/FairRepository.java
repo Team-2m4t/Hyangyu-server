@@ -1,7 +1,7 @@
 package hyangyu.server.repository;
 
 import hyangyu.server.domain.Fair;
-import hyangyu.server.dto.EventDto;
+import hyangyu.server.dto.event.EventDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
