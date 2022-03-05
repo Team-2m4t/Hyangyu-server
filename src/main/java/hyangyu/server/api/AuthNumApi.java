@@ -23,7 +23,7 @@ public class AuthNumApi {
 	private final AuthNumRepository authNumRepository;
 	private final AuthNumService authNumService;
 	
-	@DeleteMapping("/authum")
+	@DeleteMapping("/authnum")
 	public ResponseDto checkAuthNum(@Valid @RequestBody AuthNum authNum) {
 		Boolean isSame = false;
 		AuthNum realAuthNum = authNumRepository.findByEmail(authNum.getEmail()).orElseThrow(() ->new IllegalArgumentException("인증번호를 다시 발급해주세요."));
