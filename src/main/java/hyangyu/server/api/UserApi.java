@@ -9,15 +9,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import com.fasterxml.jackson.databind.node.TextNode;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/api/UserApi")
+@RequestMapping("/api/user")
 public class UserApi {
     private final UserService userService;
 
@@ -37,19 +35,19 @@ public class UserApi {
         return ResponseEntity.ok(userService.signup(userDto));
     }
 
-    @GetMapping("/user")
+    @GetMapping("")
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<UserDto> getMyUserInfo(HttpServletRequest request) {
         return ResponseEntity.ok(userService.getMyUserWithAuthorities());
     }
 
-    @GetMapping("/user/{email}")
+    @GetMapping("/{email}")
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<UserDto> getUserInfo(@PathVariable String email) {
         return ResponseEntity.ok(userService.getUserWithAuthorities(email));
     }
     
-    @PostMapping("/user/modifyUsername")
+    @PostMapping("/username")
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<ResponseDto> modifyUsername(HttpServletRequest request, @RequestBody ModificationDto user){
     	UserDto userDto = userService.getMyUserWithAuthorities();
@@ -57,12 +55,12 @@ public class UserApi {
     	return ResponseEntity.ok(userService.modifyUsername(userDto, modifiedUsername));
     }
     
-    @PostMapping("/user/modifyPassword")
+    @PostMapping("/password")
     public ResponseEntity<ResponseDto> modifyPassword(@RequestBody ModificationDto user){
     	return ResponseEntity.ok(userService.modifyPassword(user.getEmail(), user.getPassword()));
     }
     
-    @DeleteMapping("/user/deleteMyUser")
+    @DeleteMapping("")
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<ResponseDto> deleteMyUser(HttpServletRequest request){
     	UserDto userDto = userService.getMyUserWithAuthorities();
