@@ -80,7 +80,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/user").permitAll()
                 .antMatchers("/api/block/{reportedId}").permitAll()
                 .antMatchers("/api/display/{displayId}").permitAll()
-                .antMatchers("/api/authNum").permitAll()
+                .antMatchers("/api/authnum").permitAll()
                 .antMatchers("/api/send-email/{email}").permitAll()
                 .antMatchers("/api/fair/{fairId}").permitAll()
                 .antMatchers("/api/festival/{festivalId}").permitAll()
