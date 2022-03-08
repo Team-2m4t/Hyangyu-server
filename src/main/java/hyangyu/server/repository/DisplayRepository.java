@@ -2,7 +2,7 @@ package hyangyu.server.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import hyangyu.server.domain.*;
-import hyangyu.server.dto.EventDto;
+import hyangyu.server.dto.event.EventDto;
 import hyangyu.server.dto.event.DisplayDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;

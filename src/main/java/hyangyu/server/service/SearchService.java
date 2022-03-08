@@ -1,7 +1,6 @@
 package hyangyu.server.service;
 
-import hyangyu.server.dto.EventDto;
-import hyangyu.server.dto.event.DisplayDto;
+import hyangyu.server.dto.event.EventDto;
 import hyangyu.server.dto.event.SearchResponseDto;
 import hyangyu.server.repository.DisplayRepository;
 import hyangyu.server.repository.FairRepository;

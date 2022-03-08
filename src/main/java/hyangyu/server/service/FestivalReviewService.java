@@ -1,6 +1,7 @@
 package hyangyu.server.service;
 
 import hyangyu.server.domain.*;
+import hyangyu.server.dto.review.MyReviewDto;
 import hyangyu.server.dto.review.RequestReviewDto;
 import hyangyu.server.dto.review.ReviewDto;
 import hyangyu.server.repository.FestivalRepository;
@@ -76,7 +77,7 @@ public class FestivalReviewService {
         return "신고가 완료되었습니다.";
     }
 
-    public List<ReviewDto> getMyFestivalReviews(Long userId) {
+    public List<MyReviewDto> getMyFestivalReviews(Long userId) {
         return festivalReviewRepository.getMyFestivalReviews(userId);
     }
 }

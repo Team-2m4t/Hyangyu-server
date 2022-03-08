@@ -50,6 +50,7 @@ test {
 def querydslDir = "$buildDir/generated/querydsl"
 
 querydsl {
+	library = 'com.querydsl:querydsl-apt'
 	jpa = true
 	querydslSourcesDir = querydslDir
 }
@@ -64,4 +65,11 @@ configurations {
 		extendsFrom annotationProcessor
 	}
 	querydsl.extendsFrom compileClasspath
+}
+sourceSets{
+	main{
+		java{
+			srcDirs = ['src/main/java', querydslDir]
+		}
+	}
 }

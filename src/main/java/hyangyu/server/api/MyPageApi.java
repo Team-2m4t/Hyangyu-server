@@ -1,11 +1,13 @@
 package hyangyu.server.api;
 
 import hyangyu.server.dto.ErrorDto;
-import hyangyu.server.dto.MyPageDto;
-import hyangyu.server.dto.MyPageResponseDto;
+import hyangyu.server.dto.mypage.MyPageDto;
+import hyangyu.server.dto.mypage.MyPageResponseDto;
 import hyangyu.server.dto.UserDto;
 import hyangyu.server.dto.event.*;
-import hyangyu.server.service.MyPageService;
+import hyangyu.server.service.FavoriteDisplayService;
+import hyangyu.server.service.FavoriteFairService;
+import hyangyu.server.service.FavoriteFestivalService;
 import hyangyu.server.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -22,7 +24,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class MyPageApi {
 
     private final UserService userService;
-    private final MyPageService myPageService;
+    private final FavoriteDisplayService favoriteDisplayService;
+    private final FavoriteFairService favoriteFairService;
+    private final FavoriteFestivalService favoriteFestivalService;
 
     @GetMapping("/myPage")
     public ResponseEntity getMyPage() throws Exception {
@@ -48,7 +52,7 @@ public class MyPageApi {
             return new ResponseEntity(new ErrorDto(401, "유효하지 않은 사용자입니다."), HttpStatus.BAD_REQUEST);
         }
 
-        DisplayDto myDisplay = myPageService.getMyDisplay(user.getUserId(), page);
+        DisplayDto myDisplay = favoriteDisplayService.getFavoriteDisplay(user.getUserId(), page);
         DisplayResponseDto myPageResponseDto = new DisplayResponseDto(200, myDisplay);
         return new ResponseEntity<>(myPageResponseDto, httpHeaders, HttpStatus.OK);
     }
@@ -63,7 +67,7 @@ public class MyPageApi {
             return new ResponseEntity(new ErrorDto(401, "유효하지 않은 사용자입니다."), HttpStatus.BAD_REQUEST);
         }
 
-        FairDto myFair = myPageService.getMyFair(user.getUserId(), page);
+        FairDto myFair = favoriteFairService.getFavoriteFair(user.getUserId(), page);
         FairResponseDto myPageResponseDto = new FairResponseDto(200, myFair);
         return new ResponseEntity<>(myPageResponseDto, httpHeaders, HttpStatus.OK);
     }
@@ -78,7 +82,7 @@ public class MyPageApi {
             return new ResponseEntity(new ErrorDto(401, "유효하지 않은 사용자입니다."), HttpStatus.BAD_REQUEST);
         }
 
-        FestivalDto myFestival = myPageService.getMyFestival(user.getUserId(), page);
+        FestivalDto myFestival = favoriteFestivalService.getFavoriteFestival(user.getUserId(), page);
         FestivalResponseDto myPageResponseDto = new FestivalResponseDto(200, myFestival);
         return new ResponseEntity<>(myPageResponseDto, httpHeaders, HttpStatus.OK);
     }

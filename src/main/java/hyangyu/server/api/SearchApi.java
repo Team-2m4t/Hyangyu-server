@@ -6,10 +6,9 @@ import hyangyu.server.service.SearchService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -18,8 +17,9 @@ public class SearchApi {
 
     private final SearchService searchService;
 
-    @GetMapping("/search/{keyword}")
-    public ResponseEntity getSearchDate(@PathVariable String keyword) throws Exception {
+    @PostMapping("/search")
+    public ResponseEntity getSearchDate(@RequestBody Map<String, String> request) throws Exception {
+        String keyword = request.get("keyword");
         SearchResponseDto searchData = searchService.getSearchData(keyword);
         SearchDto searchDto = new SearchDto(200, searchData);
         return new ResponseEntity(searchDto, HttpStatus.OK);
