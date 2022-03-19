@@ -3,7 +3,7 @@ package hyangyu.server.repository;
 import hyangyu.server.domain.Festival;
 import hyangyu.server.domain.FavoriteFestival;
 import hyangyu.server.domain.User;
-import hyangyu.server.dto.TestEventDto;
+import hyangyu.server.dto.event.TestEventDto;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
