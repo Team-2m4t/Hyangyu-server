@@ -1,7 +1,7 @@
 package hyangyu.server.repository;
 
 import hyangyu.server.domain.*;
-import hyangyu.server.dto.TestEventDto;
+import hyangyu.server.dto.event.TestEventDto;
 import org.junit.jupiter.api.DisplayName;
 
 import org.junit.jupiter.api.Test;
