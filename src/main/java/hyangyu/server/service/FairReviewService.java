@@ -83,4 +83,8 @@ public class FairReviewService {
     public List<MyReviewDto> getMyFairReviews(Long userId) {
         return fairReviewRepository.getMyFairReviews(userId);
     }
+
+    public List<ReviewDto> getFairReviews(Long fairId) {
+        return fairReviewRepository.getFairReviews(fairId);
+    }
 }
