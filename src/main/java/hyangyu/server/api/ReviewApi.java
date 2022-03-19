@@ -366,7 +366,7 @@ public class ReviewApi {
         //전시 검색
         Optional<Fair> fair = fairService.findOne(fairId);
         if (fair.isEmpty()) {
-            return new ResponseEntity(new ErrorDto(404, "잘못된 전시 번호입니다."), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(new ErrorDto(404, "잘못된 박람회 번호입니다."), HttpStatus.BAD_REQUEST);
         }
 
         List<ReviewDto> fairReviews = fairReviewService.getFairReviews(fairId);
@@ -380,7 +380,7 @@ public class ReviewApi {
         //전시 검색
         Optional<Festival> festival = festivalService.findOne(festivalId);
         if (festival.isEmpty()) {
-            return new ResponseEntity(new ErrorDto(404, "잘못된 전시 번호입니다."), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(new ErrorDto(404, "잘못된 페스티벌 번호입니다."), HttpStatus.BAD_REQUEST);
         }
 
         List<ReviewDto> festivalReviews = festivalReviewService.getFestivalReviews(festivalId);
