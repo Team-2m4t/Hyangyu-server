@@ -361,6 +361,34 @@ public class ReviewApi {
         return new ResponseEntity(reviewResponseDto, HttpStatus.OK);
     }
 
+    @GetMapping("/show/review/fair/{fairId}")
+    public ResponseEntity getFairReviews(@PathVariable Long fairId) throws Exception {
+        //전시 검색
+        Optional<Fair> fair = fairService.findOne(fairId);
+        if (fair.isEmpty()) {
+            return new ResponseEntity(new ErrorDto(404, "잘못된 전시 번호입니다."), HttpStatus.BAD_REQUEST);
+        }
+
+        List<ReviewDto> fairReviews = fairReviewService.getFairReviews(fairId);
+        ShowReviewsDto showReviewsDto = new ShowReviewsDto(fairReviews);
+        ReviewsResponseDto reviewResponseDto = new ReviewsResponseDto(200, showReviewsDto);
+        return new ResponseEntity(reviewResponseDto, HttpStatus.OK);
+    }
+
+    @GetMapping("/show/review/festival/{festivalId}")
+    public ResponseEntity getFestivalReviews(@PathVariable Long festivalId) throws Exception {
+        //전시 검색
+        Optional<Festival> festival = festivalService.findOne(festivalId);
+        if (festival.isEmpty()) {
+            return new ResponseEntity(new ErrorDto(404, "잘못된 전시 번호입니다."), HttpStatus.BAD_REQUEST);
+        }
+
+        List<ReviewDto> festivalReviews = festivalReviewService.getFestivalReviews(festivalId);
+        ShowReviewsDto showReviewsDto = new ShowReviewsDto(festivalReviews);
+        ReviewsResponseDto reviewResponseDto = new ReviewsResponseDto(200, showReviewsDto);
+        return new ResponseEntity(reviewResponseDto, HttpStatus.OK);
+    }
+
     @GetMapping("/myreview")
     public ResponseEntity getMyReviews() throws Exception {
         //사용자 검색
