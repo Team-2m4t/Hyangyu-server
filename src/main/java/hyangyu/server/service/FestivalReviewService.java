@@ -77,6 +77,10 @@ public class FestivalReviewService {
         return "신고가 완료되었습니다.";
     }
 
+    public List<ReviewDto> getFestivalReviews(Long festivalId) {
+        return festivalReviewRepository.getFestivalReviews(festivalId);
+    }
+
     public List<MyReviewDto> getMyFestivalReviews(Long userId) {
         return festivalReviewRepository.getMyFestivalReviews(userId);
     }
