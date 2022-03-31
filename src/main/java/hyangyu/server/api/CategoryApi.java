@@ -1,7 +1,7 @@
 package hyangyu.server.api;
 
 import hyangyu.server.dto.ErrorDto;
-import hyangyu.server.dto.UserDto;
+import hyangyu.server.dto.user.UserDto;
 import hyangyu.server.dto.event.*;
 import hyangyu.server.repository.DisplayRepository;
 import hyangyu.server.service.UserService;

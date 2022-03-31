@@ -15,16 +15,10 @@ import hyangyu.server.domain.BlockedUser;
 import hyangyu.server.domain.User;
 import hyangyu.server.dto.ErrorDto;
 import hyangyu.server.dto.ResponseDto;
-import hyangyu.server.dto.UserDto;
+import hyangyu.server.dto.user.UserDto;
 import hyangyu.server.repository.BlockedUserRepository;
 import hyangyu.server.repository.UserRepository;
 import hyangyu.server.service.BlockService;
-import hyangyu.server.service.DisplayService;
-import hyangyu.server.service.FairService;
-import hyangyu.server.service.FavoriteDisplayService;
-import hyangyu.server.service.FavoriteFairService;
-import hyangyu.server.service.FavoriteFestivalService;
-import hyangyu.server.service.FestivalService;
 import hyangyu.server.service.UserService;
 import lombok.RequiredArgsConstructor;
 

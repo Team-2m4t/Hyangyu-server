@@ -1,10 +1,9 @@
 package hyangyu.server.service;
 
 import java.util.Collections;
-import java.util.Optional;
 
 import hyangyu.server.dto.ResponseDto;
-import hyangyu.server.dto.UserDto;
+import hyangyu.server.dto.user.UserDto;
 import hyangyu.server.domain.Authority;
 import hyangyu.server.domain.User;
 import hyangyu.server.jwt.DuplicateMemberException;

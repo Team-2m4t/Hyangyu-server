@@ -3,7 +3,7 @@ package hyangyu.server.api;
 import hyangyu.server.domain.*;
 import hyangyu.server.dto.ErrorDto;
 import hyangyu.server.dto.ResponseDto;
-import hyangyu.server.dto.UserDto;
+import hyangyu.server.dto.user.UserDto;
 import hyangyu.server.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;

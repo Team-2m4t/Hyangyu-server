@@ -1,10 +1,9 @@
-package hyangyu.server.dto;
+package hyangyu.server.dto.user;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import hyangyu.server.domain.User;
 
-import javax.persistence.Column;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Set;

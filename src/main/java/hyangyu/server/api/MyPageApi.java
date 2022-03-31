@@ -3,7 +3,7 @@ package hyangyu.server.api;
 import hyangyu.server.dto.ErrorDto;
 import hyangyu.server.dto.mypage.MyPageDto;
 import hyangyu.server.dto.mypage.MyPageResponseDto;
-import hyangyu.server.dto.UserDto;
+import hyangyu.server.dto.user.UserDto;
 import hyangyu.server.dto.event.*;
 import hyangyu.server.service.FavoriteDisplayService;
 import hyangyu.server.service.FavoriteFairService;
