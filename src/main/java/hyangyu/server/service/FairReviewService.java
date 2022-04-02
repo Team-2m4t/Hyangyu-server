@@ -31,13 +31,9 @@ public class FairReviewService {
     private final FairRepository fairRepository;
 
     public void saveFairReview(RequestReviewDto requestReviewDto, Long fairId) {
-        String userEmail = SecurityUtil.getCurrentEmail()
-                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
-        User user = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        User user = getUser();
 
-        Fair fair = fairRepository.findOne(fairId)
-                .orElseThrow(() -> new CustomException(FAIR_NOT_FOUND));
+        Fair fair = getFair(fairId);
 
         // 길이 확인
         int length = requestReviewDto.getContent().length();
@@ -49,20 +45,16 @@ public class FairReviewService {
         int count = fairReviewRepository.getCount(fair.getFairId(), user.getUserId());
         if (count == 0) {
             FairReview fairReview = FairReview.createFairReview(user, fair, LocalDateTime.now(), requestReviewDto.getContent(), requestReviewDto.getScore(), 0);
-            FairReview savedFairReview = fairReviewRepository.save(fairReview);
+            fairReviewRepository.save(fairReview);
         } else {
             throw new CustomException(ALREADY_SAVED_REVIEW);
         }
     }
 
     public void modifyFairReview(RequestReviewDto requestReviewDto, Long fairId) {
-        String userEmail = SecurityUtil.getCurrentEmail()
-                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
-        User user = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        User user = getUser();
 
-        Fair fair = fairRepository.findOne(fairId)
-                .orElseThrow(() -> new CustomException(FAIR_NOT_FOUND));
+        Fair fair = getFair(fairId);
 
         // 길이 확인
         int length = requestReviewDto.getContent().length();
@@ -78,13 +70,9 @@ public class FairReviewService {
     }
 
     public void deleteFairReview(Long fairId) {
-        String userEmail = SecurityUtil.getCurrentEmail()
-                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
-        User user = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        User user = getUser();
 
-        Fair fair = fairRepository.findOne(fairId)
-                .orElseThrow(() -> new CustomException(FAIR_NOT_FOUND));
+        Fair fair = getFair(fairId);
 
         Optional<FairReview> fairReview = Optional.ofNullable(fairReviewRepository.getFairReview(fair.getFairId(), user.getUserId()));
         if (fairReview.isEmpty()) {
@@ -127,5 +115,17 @@ public class FairReviewService {
 
     public List<ReviewDto> getFairReviews(Long fairId) {
         return fairReviewRepository.getFairReviews(fairId);
+    }
+
+    private User getUser() {
+        String userEmail = SecurityUtil.getCurrentEmail()
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        return userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+    }
+
+    private Fair getFair(Long fairId) {
+        return fairRepository.findOne(fairId)
+                .orElseThrow(() -> new CustomException(FAIR_NOT_FOUND));
     }
 }

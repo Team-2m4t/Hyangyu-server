@@ -34,13 +34,9 @@ public class DisplayReviewService {
     private final DisplayRepository displayRepository;
 
     public void saveDisplayReview(RequestReviewDto requestReviewDto, Long displayId) {
-        String userEmail = SecurityUtil.getCurrentEmail()
-                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
-        User user = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        User user = getUser();
 
-        Display display = displayRepository.findOne(displayId)
-                .orElseThrow(() -> new CustomException(DISPLAY_NOT_FOUND));
+        Display display = getDisplay(displayId);
 
         // 길이 확인
         int length = requestReviewDto.getContent().length();
@@ -52,20 +48,16 @@ public class DisplayReviewService {
         int count = displayReviewRepository.getCount(display.getDisplayId(), user.getUserId());
         if (count == 0) {
             DisplayReview displayReview = DisplayReview.createDisplayReview(user, display, LocalDateTime.now(), requestReviewDto.getContent(), requestReviewDto.getScore(), 0);
-            DisplayReview savedDisplayReview = displayReviewRepository.save(displayReview);
+            displayReviewRepository.save(displayReview);
         } else {
             throw new CustomException(ALREADY_SAVED_REVIEW);
         }
     }
 
     public void modifyDisplayReview(RequestReviewDto requestReviewDto, Long displayId) {
-        String userEmail = SecurityUtil.getCurrentEmail()
-                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
-        User user = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        User user = getUser();
 
-        Display display = displayRepository.findOne(displayId)
-                .orElseThrow(() -> new CustomException(DISPLAY_NOT_FOUND));
+        Display display = getDisplay(displayId);
 
         // 길이 확인
         int length = requestReviewDto.getContent().length();
@@ -81,15 +73,11 @@ public class DisplayReviewService {
     }
 
     public void deleteDisplayReview(Long displayId) {
-        String userEmail = SecurityUtil.getCurrentEmail()
-                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
-        User user = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        User user = getUser();
 
-        Display display = displayRepository.findOne(displayId)
-                .orElseThrow(() -> new CustomException(DISPLAY_NOT_FOUND));
+        Display display = getDisplay(displayId);
 
-        Optional<DisplayReview> displayReview = Optional.ofNullable(displayReviewRepository.getDisplayReview(displayId, user.getUserId()));
+        Optional<DisplayReview> displayReview = Optional.ofNullable(displayReviewRepository.getDisplayReview(display.getDisplayId(), user.getUserId()));
         if (displayReview.isEmpty()) {
             throw new CustomException(REVIEW_NOT_FOUND);
         }
@@ -130,5 +118,17 @@ public class DisplayReviewService {
 
     public List<MyReviewDto> getMyDisplayReviews(Long userId) {
         return displayReviewRepository.getMyDisplayReviews(userId);
+    }
+
+    private User getUser() {
+        String userEmail = SecurityUtil.getCurrentEmail()
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        return userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+    }
+
+    private Display getDisplay(Long displayId) {
+        return displayRepository.findOne(displayId)
+                .orElseThrow(() -> new CustomException(DISPLAY_NOT_FOUND));
     }
 }
