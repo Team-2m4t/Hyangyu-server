@@ -1,14 +1,12 @@
 package hyangyu.server.api;
 
-import javax.validation.Valid;
-
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import hyangyu.server.domain.AuthNum;
-import hyangyu.server.dto.EmailDto;
+import hyangyu.server.dto.user.EmailDto;
 import hyangyu.server.dto.ResponseDto;
 import hyangyu.server.service.AuthNumService;
 import hyangyu.server.service.EmailService;

@@ -1,9 +1,8 @@
 package hyangyu.server.api;
 
-import hyangyu.server.dto.ModificationDto;
+import hyangyu.server.dto.user.ModificationDto;
 import hyangyu.server.dto.ResponseDto;
-import hyangyu.server.dto.UserDto;
-import hyangyu.server.domain.User;
+import hyangyu.server.dto.user.UserDto;
 import hyangyu.server.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

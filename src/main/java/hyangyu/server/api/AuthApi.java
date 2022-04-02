@@ -1,7 +1,7 @@
 package hyangyu.server.api;
 
 
-import hyangyu.server.dto.LoginDto;
+import hyangyu.server.dto.user.LoginDto;
 import hyangyu.server.dto.TokenDto;
 import hyangyu.server.jwt.JwtFilter;
 import hyangyu.server.jwt.TokenProvider;

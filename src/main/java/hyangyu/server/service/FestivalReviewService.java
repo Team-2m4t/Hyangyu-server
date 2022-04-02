@@ -4,6 +4,8 @@ import hyangyu.server.domain.*;
 import hyangyu.server.dto.review.MyReviewDto;
 import hyangyu.server.dto.review.RequestReviewDto;
 import hyangyu.server.dto.review.ReviewDto;
+import hyangyu.server.exception.CustomException;
+import hyangyu.server.jwt.SecurityUtil;
 import hyangyu.server.repository.FestivalRepository;
 import hyangyu.server.repository.FestivalReviewRepository;
 import hyangyu.server.repository.FestivalWarnRepository;
@@ -16,6 +18,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import static hyangyu.server.constants.ExceptionCode.*;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -26,27 +30,55 @@ public class FestivalReviewService {
     private final UserRepository userRepository;
     private final FestivalRepository festivalRepository;
 
-    public int saveFestivalReview(Long userId, Long festivalId, RequestReviewDto requestReviewDto) {
-        Optional<User> user = userRepository.findById(userId);
-        Optional<Festival> festival = festivalRepository.findOne(festivalId);
-        int count = festivalReviewRepository.getCount(festival.get().getFestivalId(), user.get().getUserId());
-        if (count == 0) {
-            FestivalReview festivalReview = FestivalReview.createFestivalReview(user.get(), festival.get(), LocalDateTime.now(), requestReviewDto.getContent(), requestReviewDto.getScore(), 0);
-            FestivalReview savedFestivalReview = festivalReviewRepository.save(festivalReview);
+    public void saveFestivalReview(RequestReviewDto requestReviewDto, Long festivalId) {
+        User user = getUser();
+
+        Festival festival = getFestival(festivalId);
+
+        // 길이 확인
+        int length = requestReviewDto.getContent().length();
+        if (length > 300) {
+            throw new CustomException(REVIEW_LENGTH_EXCESS);
         }
-        return count;
+
+        //이미 페스티벌에 대한 리뷰 달았는지 확인 후 저장
+        int count = festivalReviewRepository.getCount(festival.getFestivalId(), user.getUserId());
+        if (count == 0) {
+            FestivalReview festivalReview = FestivalReview.createFestivalReview(user, festival, LocalDateTime.now(), requestReviewDto.getContent(), requestReviewDto.getScore(), 0);
+            festivalReviewRepository.save(festivalReview);
+        } else {
+            throw new CustomException(ALREADY_SAVED_REVIEW);
+        }
     }
 
-    public Optional<FestivalReview> modifyFestivalReview(Long userId, Long festivalId, RequestReviewDto requestReviewDto) {
-        Optional<FestivalReview> festivalReview = Optional.ofNullable(festivalReviewRepository.getFestivalReview(festivalId, userId));
+    public void modifyFestivalReview(RequestReviewDto requestReviewDto, Long festivalId) {
+        User user = getUser();
+
+        Festival festival = getFestival(festivalId);
+
+        // 길이 확인
+        int length = requestReviewDto.getContent().length();
+        if (length > 300) {
+            throw new CustomException(REVIEW_LENGTH_EXCESS);
+        }
+
+        Optional<FestivalReview> festivalReview = Optional.ofNullable(festivalReviewRepository.getFestivalReview(festival.getFestivalId(), user.getUserId()));
+        if (festivalReview.isEmpty()) {
+            throw new CustomException(REVIEW_NOT_FOUND);
+        }
         festivalReview.ifPresent(review -> review.updateFestivalReview(requestReviewDto.getContent(), requestReviewDto.getScore()));
-        return festivalReview;
     }
 
-    public Optional<FestivalReview> deleteFestivalReview(Long userId, Long festivalId) {
-        Optional<FestivalReview> festivalReview = Optional.ofNullable(festivalReviewRepository.getFestivalReview(festivalId, userId));
+    public void deleteFestivalReview(Long festivalId) {
+        User user = getUser();
+
+        Festival festival = getFestival(festivalId);
+
+        Optional<FestivalReview> festivalReview = Optional.ofNullable(festivalReviewRepository.getFestivalReview(festival.getFestivalId(), user.getUserId()));
+        if (festivalReview.isEmpty()) {
+            throw new CustomException(REVIEW_NOT_FOUND);
+        }
         festivalReview.ifPresent(festivalReviewRepository::delete);
-        return festivalReview;
     }
 
     public Optional<FestivalReview> findReview(Long reviewId) {
@@ -83,5 +115,19 @@ public class FestivalReviewService {
 
     public List<MyReviewDto> getMyFestivalReviews(Long userId) {
         return festivalReviewRepository.getMyFestivalReviews(userId);
+    }
+
+    private User getUser() {
+        String userEmail = SecurityUtil.getCurrentEmail()
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        return user;
+    }
+
+    private Festival getFestival(Long festivalId) {
+        Festival festival = festivalRepository.findOne(festivalId)
+                .orElseThrow(() -> new CustomException(FESTIVAL_NOT_FOUND));
+        return festival;
     }
 }
