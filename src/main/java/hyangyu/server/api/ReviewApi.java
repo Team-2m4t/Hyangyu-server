@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
+import static hyangyu.server.constants.SuccessCode.*;
+
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
@@ -28,34 +30,10 @@ public class ReviewApi {
     private final UserService userService;
 
     @PostMapping("/review/display/{displayId}")
-    public ResponseEntity saveDisplayReview(@PathVariable Long displayId, @RequestBody RequestReviewDto requestReviewDto) throws Exception {
-        HttpHeaders httpHeaders = new HttpHeaders();
+    public ResponseEntity<ReviewResponse> saveDisplayReview(@PathVariable Long displayId, @RequestBody RequestReviewDto requestReviewDto) throws Exception {
+        displayReviewService.saveDisplayReview(requestReviewDto, displayId);
 
-        //전시 검색
-        Optional<Display> display = displayService.findOne(displayId);
-        if (display.isEmpty()) {
-            return new ResponseEntity(new ErrorDto(404, "잘못된 전시 번호입니다."), HttpStatus.BAD_REQUEST);
-        }
-
-        //사용자 검색
-        UserDto user = userService.getMyUserWithAuthorities();
-        if (user == null) {
-            return new ResponseEntity(new ErrorDto(401, "유효하지 않은 사용자입니다."), HttpStatus.BAD_REQUEST);
-        }
-
-        //리뷰 저장
-        int length = requestReviewDto.getContent().length();
-        if (length > 300) {
-            return new ResponseEntity(new ErrorDto(404, "리뷰 길이가 300자를 초과합니다."), HttpStatus.BAD_REQUEST);
-        }
-
-        int count = displayReviewService.saveDisplayReview(user.getUserId(), displayId, requestReviewDto);
-        if (count == 0) {
-            SaveReviewResponseDto saveReviewResponseDto = new SaveReviewResponseDto(200, "리뷰 작성이 완료되었습니다.");
-            return new ResponseEntity(saveReviewResponseDto, httpHeaders, HttpStatus.OK);
-        } else {
-            return new ResponseEntity(new ErrorDto(404, "이미 전시에 대한 리뷰를 달았습니다."), HttpStatus.BAD_REQUEST);
-        }
+        return ReviewResponse.newResponse(REVIEW_SAVE_SUCCESS);
     }
 
     @PostMapping("/review/fair/{fairId}")
@@ -121,33 +99,10 @@ public class ReviewApi {
     }
 
     @PostMapping("/review/change/display/{displayId}")
-    public ResponseEntity updateDisplayReview(@PathVariable Long displayId, @RequestBody RequestReviewDto requestReviewDto) throws Exception {
-        HttpHeaders httpHeaders = new HttpHeaders();
+    public ResponseEntity<ReviewResponse> updateDisplayReview(@PathVariable Long displayId, @RequestBody RequestReviewDto requestReviewDto) throws Exception {
+        displayReviewService.modifyDisplayReview(requestReviewDto, displayId);
 
-        //전시 검색
-        Optional<Display> display = displayService.findOne(displayId);
-        if (display.isEmpty()) {
-            return new ResponseEntity(new ErrorDto(404, "잘못된 전시 번호입니다."), HttpStatus.BAD_REQUEST);
-        }
-
-        //사용자 검색
-        UserDto user = userService.getMyUserWithAuthorities();
-        if (user == null) {
-            return new ResponseEntity(new ErrorDto(401, "유효하지 않은 사용자입니다."), HttpStatus.BAD_REQUEST);
-        }
-
-        //리뷰 길이 제한
-        int length = requestReviewDto.getContent().length();
-        if (length > 300) {
-            return new ResponseEntity(new ErrorDto(404, "리뷰 길이가 300자를 초과합니다."), HttpStatus.BAD_REQUEST);
-        }
-        Optional<DisplayReview> displayReview = displayReviewService.modifyDisplayReview(user.getUserId(), displayId, requestReviewDto);
-        if (displayReview.isEmpty()) {
-            return new ResponseEntity(new ErrorDto(404, "수정할 리뷰가 없습니다."), HttpStatus.BAD_REQUEST);
-        } else {
-            ResponseDto responseDto = new ResponseDto(200, "리뷰 수정이 완료되었습니다.");
-            return new ResponseEntity(responseDto, httpHeaders, HttpStatus.OK);
-        }
+        return ReviewResponse.newResponse(REVIEW_UPDATE_SUCCESS);
     }
 
     @PostMapping("/review/change/fair/{fairId}")
@@ -211,28 +166,10 @@ public class ReviewApi {
     }
 
     @DeleteMapping("/review/display/{displayId}")
-    public ResponseEntity deleteDisplayReview(@PathVariable Long displayId) throws Exception {
-        HttpHeaders httpHeaders = new HttpHeaders();
+    public ResponseEntity<ReviewResponse> deleteDisplayReview(@PathVariable Long displayId) throws Exception {
+        displayReviewService.deleteDisplayReview(displayId);
 
-        //전시 검색
-        Optional<Display> display = displayService.findOne(displayId);
-        if (display.isEmpty()) {
-            return new ResponseEntity(new ErrorDto(404, "잘못된 전시 번호입니다."), HttpStatus.BAD_REQUEST);
-        }
-
-        //사용자 검색
-        UserDto user = userService.getMyUserWithAuthorities();
-        if (user == null) {
-            return new ResponseEntity(new ErrorDto(401, "유효하지 않은 사용자입니다."), HttpStatus.BAD_REQUEST);
-        }
-
-        Optional<DisplayReview> displayReview = displayReviewService.deleteDisplayReview(user.getUserId(), displayId);
-        if (displayReview.isEmpty()) {
-            return new ResponseEntity(new ErrorDto(404, "삭제할 리뷰가 없습니다."), HttpStatus.BAD_REQUEST);
-        } else {
-            ResponseDto responseDto = new ResponseDto(200, "리뷰 삭제가 완료되었습니다.");
-            return new ResponseEntity(responseDto, httpHeaders, HttpStatus.OK);
-        }
+        return ReviewResponse.newResponse(REVIEW_DELETE_SUCCESS);
     }
 
     @DeleteMapping("/review/fair/{fairId}")

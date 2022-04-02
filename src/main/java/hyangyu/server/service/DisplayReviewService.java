@@ -7,6 +7,8 @@ import hyangyu.server.domain.User;
 import hyangyu.server.dto.review.MyReviewDto;
 import hyangyu.server.dto.review.RequestReviewDto;
 import hyangyu.server.dto.review.ReviewDto;
+import hyangyu.server.exception.CustomException;
+import hyangyu.server.jwt.SecurityUtil;
 import hyangyu.server.repository.DisplayRepository;
 import hyangyu.server.repository.DisplayReviewRepository;
 import hyangyu.server.repository.DisplayWarnRepository;
@@ -19,6 +21,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import static hyangyu.server.constants.ExceptionCode.*;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -29,27 +33,67 @@ public class DisplayReviewService {
     private final UserRepository userRepository;
     private final DisplayRepository displayRepository;
 
-    public int saveDisplayReview(Long userId, Long displayId, RequestReviewDto requestReviewDto) {
-        Optional<User> user = userRepository.findById(userId);
-        Optional<Display> display = displayRepository.findOne(displayId);
-        int count = displayReviewRepository.getCount(display.get().getDisplayId(), user.get().getUserId());
-        if (count == 0) {
-            DisplayReview displayReview = DisplayReview.createDisplayReview(user.get(), display.get(), LocalDateTime.now(), requestReviewDto.getContent(), requestReviewDto.getScore(), 0);
-            DisplayReview savedDisplayReview = displayReviewRepository.save(displayReview);
+    public void saveDisplayReview(RequestReviewDto requestReviewDto, Long displayId) {
+        String userEmail = SecurityUtil.getCurrentEmail()
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+
+        Display display = displayRepository.findOne(displayId)
+                .orElseThrow(() -> new CustomException(DISPLAY_NOT_FOUND));
+
+        // 길이 확인
+        int length = requestReviewDto.getContent().length();
+        if (length > 300) {
+            throw new CustomException(REVIEW_LENGTH_EXCESS);
         }
-        return count;
+
+        //이미 전시에 대한 리뷰 달았는지 확인 후 저장
+        int count = displayReviewRepository.getCount(display.getDisplayId(), user.getUserId());
+        if (count == 0) {
+            DisplayReview displayReview = DisplayReview.createDisplayReview(user, display, LocalDateTime.now(), requestReviewDto.getContent(), requestReviewDto.getScore(), 0);
+            DisplayReview savedDisplayReview = displayReviewRepository.save(displayReview);
+        } else {
+            throw new CustomException(ALREADY_SAVED_REVIEW);
+        }
     }
 
-    public Optional<DisplayReview> modifyDisplayReview(Long userId, Long displayId, RequestReviewDto requestReviewDto) {
-        Optional<DisplayReview> displayReview = Optional.ofNullable(displayReviewRepository.getDisplayReview(displayId, userId));
+    public void modifyDisplayReview(RequestReviewDto requestReviewDto, Long displayId) {
+        String userEmail = SecurityUtil.getCurrentEmail()
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+
+        Display display = displayRepository.findOne(displayId)
+                .orElseThrow(() -> new CustomException(DISPLAY_NOT_FOUND));
+
+        // 길이 확인
+        int length = requestReviewDto.getContent().length();
+        if (length > 300) {
+            throw new CustomException(REVIEW_LENGTH_EXCESS);
+        }
+
+        Optional<DisplayReview> displayReview = Optional.ofNullable(displayReviewRepository.getDisplayReview(display.getDisplayId(), user.getUserId()));
+        if (displayReview.isEmpty()) {
+            throw new CustomException(REVIEW_NOT_FOUND);
+        }
         displayReview.ifPresent(review -> review.updateDisplayReview(requestReviewDto.getContent(), requestReviewDto.getScore()));
-        return displayReview;
     }
 
-    public Optional<DisplayReview> deleteDisplayReview(Long userId, Long displayId) {
-        Optional<DisplayReview> displayReview = Optional.ofNullable(displayReviewRepository.getDisplayReview(displayId, userId));
+    public void deleteDisplayReview(Long displayId) {
+        String userEmail = SecurityUtil.getCurrentEmail()
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+
+        Display display = displayRepository.findOne(displayId)
+                .orElseThrow(() -> new CustomException(DISPLAY_NOT_FOUND));
+
+        Optional<DisplayReview> displayReview = Optional.ofNullable(displayReviewRepository.getDisplayReview(displayId, user.getUserId()));
+        if (displayReview.isEmpty()) {
+            throw new CustomException(REVIEW_NOT_FOUND);
+        }
         displayReview.ifPresent(displayReviewRepository::delete);
-        return displayReview;
     }
 
     public Optional<DisplayReview> findReview(Long reviewId) {
