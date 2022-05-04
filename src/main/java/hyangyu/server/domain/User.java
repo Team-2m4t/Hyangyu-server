@@ -46,7 +46,7 @@ public class User {
 	@NotNull
 	private String token;
 	
-	@Column(length = 50)
+	@Column
 	private String image;
 	
 	@ManyToMany

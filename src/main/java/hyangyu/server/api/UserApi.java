@@ -12,7 +12,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import hyangy.server.aws.S3Uploader;
+import hyangyu.server.aws.S3Uploader;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -63,7 +63,9 @@ public class UserApi {
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<ResponseDto> uploadProfileImage(HttpServletRequest request, @RequestParam("images")MultipartFile multipartFile) throws IOException {
     	UserDto userDto = userService.getMyUserWithAuthorities();
-    	String imgurl = s3Uploader.upload(multipartFile, "static");
+    	if(s3Uploader.findImg(userDto.getImage()) != null)
+    		s3Uploader.delete(userDto.getImage());
+    	String imgurl = s3Uploader.upload(multipartFile, "static").substring(7);
     	return ResponseEntity.ok(userService.modifyImg(userDto.getEmail(), imgurl));
     }
     

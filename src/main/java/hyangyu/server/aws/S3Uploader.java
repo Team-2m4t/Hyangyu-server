@@ -1,4 +1,4 @@
-package hyangy.server.aws;
+package hyangyu.server.aws;
 
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
@@ -31,13 +31,17 @@ public class S3Uploader {
 
         return upload(uploadFile, dirName);
     }
+    
+    public void delete(String name) {
+    	amazonS3Client.deleteObject(bucket,name);
+    }
 
     // S3로 파일 업로드하기
     private String upload(File uploadFile, String dirName) {
         String fileName = dirName + "/" + UUID.randomUUID() + uploadFile.getName();   // S3에 저장된 파일 이름 
         String uploadImageUrl = putS3(uploadFile, fileName); // s3로 업로드
         removeNewFile(uploadFile);
-        return uploadImageUrl;
+        return fileName;
     }
 
     // S3로 업로드
@@ -48,6 +52,13 @@ public class S3Uploader {
     
     public String getThumbnailPath(String path) {
         return amazonS3Client.getUrl(bucket, path).toString();
+    }
+    
+    public String findImg(String name) {
+    	if(amazonS3Client.getObject(bucket, name) != null)
+    		return amazonS3Client.getObject(bucket, name).toString();
+    	else
+    		return null;
     }
 
     // 로컬에 저장된 이미지 지우기
