@@ -63,11 +63,19 @@ public class UserApi {
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<ResponseDto> uploadProfileImage(HttpServletRequest request, @RequestParam("images")MultipartFile multipartFile) throws IOException {
     	UserDto userDto = userService.getMyUserWithAuthorities();
-    	if(s3Uploader.findImg(userDto.getImage()) != null)
+    	if(userDto.getImage() != null)
     		s3Uploader.delete(userDto.getImage());
-    	String imgurl = s3Uploader.upload(multipartFile, "static").substring(7);
+    	String imgurl = s3Uploader.upload(multipartFile, "static");
     	return ResponseEntity.ok(userService.modifyImg(userDto.getEmail(), imgurl));
     }
+    
+    /*@DeleteMapping("/image")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
+    public ResponseEntity<ResponseDto> deleteProfileImage(HttpServletRequest request) throws IOException {
+    	UserDto userDto = userService.getMyUserWithAuthorities();
+    	s3Uploader.delete(userDto.getImage());
+    	return ResponseEntity.ok(new ResponseDto(HttpStatus.OK.value(),"프로필 이미지가 정상적으로 삭제되었습니다."));
+    }*/
     
     @GetMapping("/image")
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
