@@ -68,6 +68,14 @@ public class UserService {
     }
     
     @Transactional
+    public ResponseDto modifyImg(String email, String imgurl) {
+    	User userEntity = userRepository.findByEmail(email).orElseThrow(() ->new IllegalArgumentException("해당 회원이 없습니다."));
+    	userEntity.setImage(imgurl);
+    	
+    	return new ResponseDto(HttpStatus.OK.value(), email+"님의 프로필 사진이 변경되었습니다.");
+    }
+    
+    @Transactional
     public ResponseDto deleteMyUser(UserDto userDto) {
     	User user = userRepository.findById(userDto.getUserId())
     			.orElseThrow(()->new IllegalArgumentException("해당 회원이 존재하지 않습니다. id=" + userDto.getUserId()));

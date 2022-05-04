@@ -75,5 +75,9 @@ public class User {
 	public void setUsername(String username) {
 		this.username = username;
 	}
+	
+	public void setImage(String img) {
+		this.image = img;
+	}
 			
 }
