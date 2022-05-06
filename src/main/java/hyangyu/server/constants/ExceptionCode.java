@@ -20,13 +20,17 @@ public enum ExceptionCode {
     UNSUPPORTED_TOKEN(UNAUTHORIZED, "지원되지 않는 JWT 토큰입니다."),
     WRONG_TOKEN(UNAUTHORIZED, "JWT 토큰이 잘못되었습니다."),
     UNKNOWN_ERROR(UNAUTHORIZED, "알 수 없는 요청 인증 에러! 헤더에 토큰을 넣어 보냈는지 다시 한 번 확인해보세요."),
-    ACCESS_DENIED(UNAUTHORIZED, "접근이 거절되었습니다.")
+    ACCESS_DENIED(UNAUTHORIZED, "접근이 거절되었습니다."),
 
-    /* 404 - 찾을 수 없는 리소스 */,
+    /* 403 - 허용되지 않은 접근 */
+    ACCUSE_DENIED(FORBIDDEN, "내가 쓴 리뷰는 신고할 수 없습니다."),
+
+    /* 404 - 찾을 수 없는 리소스 */
     USER_NOT_FOUND(NOT_FOUND, "유효하지 않은 사용자입니다."),
     DISPLAY_NOT_FOUND(NOT_FOUND, "잘못된 전시 id입니다."),
     FAIR_NOT_FOUND(NOT_FOUND, "잘못된 박람회 id입니다."),
     FESTIVAL_NOT_FOUND(NOT_FOUND, "잘못된 페스티벌 id입니다."),
+    EVENT_NOT_FOUND(NOT_FOUND, "잘못된 이벤트명입니다."),
     REVIEW_NOT_FOUND(NOT_FOUND, "작성한 리뷰가 없습니다."),
 
 

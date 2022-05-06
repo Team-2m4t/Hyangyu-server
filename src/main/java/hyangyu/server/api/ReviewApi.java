@@ -4,9 +4,9 @@ import hyangyu.server.domain.*;
 import hyangyu.server.dto.*;
 import hyangyu.server.dto.review.*;
 import hyangyu.server.dto.user.UserDto;
+import hyangyu.server.exception.CustomException;
 import hyangyu.server.service.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
+import static hyangyu.server.constants.ExceptionCode.EVENT_NOT_FOUND;
 import static hyangyu.server.constants.SuccessCode.*;
 
 @RestController
@@ -93,65 +94,21 @@ public class ReviewApi {
     }
 
     @PostMapping("/review/accuse/{event}/{reviewId}")
-    public ResponseEntity accuseReview(@PathVariable Long reviewId, @PathVariable String event) throws Exception {
-        //사용자 검색
-        UserDto user = userService.getMyUserWithAuthorities();
-        if (user == null) {
-            return new ResponseEntity(new ErrorDto(401, "유효하지 않은 사용자입니다."), HttpStatus.BAD_REQUEST);
-        }
-
+    public ResponseEntity<ReviewResponse> accuseReview(@PathVariable Long reviewId, @PathVariable String event) throws Exception {
         if (event.equals("display")) {
-            //리뷰 검색
-            Optional<DisplayReview> displayReview = displayReviewService.findReview(reviewId);
-            if (displayReview.isEmpty()) {
-                return new ResponseEntity(new ErrorDto(404, "신고할 리뷰가 없습니다."), HttpStatus.BAD_REQUEST);
-            } else {
-                String message = displayReviewService.accuseDisplayReview(displayReview.get(), user.getUserId());
-                if (message.equals("내가 쓴 리뷰는 신고할 수 없습니다.")) {
-                    return new ResponseEntity(new ErrorDto(404, message), HttpStatus.BAD_REQUEST);
-                }
-                if (message.equals("이미 신고한 리뷰입니다.")) {
-                    return new ResponseEntity(new ErrorDto(404, message), HttpStatus.BAD_REQUEST);
-                }
-                ResponseDto responseDto = new ResponseDto(200, message);
-                return new ResponseEntity(responseDto, HttpStatus.OK);
-            }
+            displayReviewService.accuseDisplayReview(reviewId);
 
+            return ReviewResponse.newResponse(REVIEW_WARN_SUCCESS);
         } else if (event.equals("fair")) {
-            //리뷰 검색
-            Optional<FairReview> fairReview = fairReviewService.findReview(reviewId);
-            if (fairReview.isEmpty()) {
-                return new ResponseEntity(new ErrorDto(404, "신고할 리뷰가 없습니다."), HttpStatus.BAD_REQUEST);
-            } else {
-                String message = fairReviewService.accuseFairReview(fairReview.get(), user.getUserId());
-                if (message.equals("내가 쓴 리뷰는 신고할 수 없습니다.")) {
-                    return new ResponseEntity(new ErrorDto(404, message), HttpStatus.BAD_REQUEST);
-                }
-                if (message.equals("이미 신고한 리뷰입니다.")) {
-                    return new ResponseEntity(new ErrorDto(404, message), HttpStatus.BAD_REQUEST);
-                }
-                ResponseDto responseDto = new ResponseDto(200, message);
-                return new ResponseEntity(responseDto, HttpStatus.OK);
-            }
+            fairReviewService.accuseFairReview(reviewId);
 
+            return ReviewResponse.newResponse(REVIEW_WARN_SUCCESS);
         } else if (event.equals("festival")) {
-            //리뷰 검색
-            Optional<FestivalReview> festivalReview = festivalReviewService.findReview(reviewId);
-            if (festivalReview.isEmpty()) {
-                return new ResponseEntity(new ErrorDto(404, "신고할 리뷰가 없습니다."), HttpStatus.BAD_REQUEST);
-            } else {
-                String message = festivalReviewService.accuseFestivalReview(festivalReview.get(), user.getUserId());
-                if (message.equals("내가 쓴 리뷰는 신고할 수 없습니다.")) {
-                    return new ResponseEntity(new ErrorDto(404, message), HttpStatus.BAD_REQUEST);
-                }
-                if (message.equals("이미 신고한 리뷰입니다.")) {
-                    return new ResponseEntity(new ErrorDto(404, message), HttpStatus.BAD_REQUEST);
-                }
-                ResponseDto responseDto = new ResponseDto(200, message);
-                return new ResponseEntity(responseDto, HttpStatus.OK);
-            }
+            festivalReviewService.accuseFestivalReview(reviewId);
+
+            return ReviewResponse.newResponse(REVIEW_WARN_SUCCESS);
         } else {
-            return new ResponseEntity(new ErrorDto(404, "이벤트명이 잘못되었습니다."), HttpStatus.BAD_REQUEST);
+            throw new CustomException(EVENT_NOT_FOUND);
         }
     }
 

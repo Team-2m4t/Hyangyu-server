@@ -81,32 +81,30 @@ public class FestivalReviewService {
         festivalReview.ifPresent(festivalReviewRepository::delete);
     }
 
-    public Optional<FestivalReview> findReview(Long reviewId) {
-        return festivalReviewRepository.findById(reviewId);
-    }
+    public void accuseFestivalReview(Long reviewId) {
+        User user = getUser();
 
-    public String accuseFestivalReview(FestivalReview festivalReview, Long userId) {
-        Optional<User> user = userRepository.findById(userId);
-        if (userId.equals(festivalReview.getUser().getUserId())) {
-            return "내가 쓴 리뷰는 신고할 수 없습니다.";
+        FestivalReview festivalReview = festivalReviewRepository.findById(reviewId)
+                .orElseThrow(() -> new CustomException(REVIEW_NOT_FOUND));
+
+        if (user.equals(festivalReview.getUser())) {
+            throw new CustomException(ACCUSE_DENIED);
         }
 
-        Optional<FestivalWarn> festivalWarn = Optional.ofNullable(festivalWarnRepository.getFestivalWarn(festivalReview.getReviewId(), userId));
-        if (festivalWarn.isEmpty() && user.isPresent()) {
-            FestivalWarn warn = FestivalWarn.createFestivalWarn(festivalReview, user.get());
+        Optional<FestivalWarn> festivalWarn = festivalWarnRepository.getFestivalWarn(reviewId, user.getUserId());
+        if (festivalWarn.isEmpty()) {
+            FestivalWarn warn = FestivalWarn.createFestivalWarn(festivalReview, user);
             festivalWarnRepository.save(warn);
 
             festivalReview.increaseWarn();
             if (festivalReview.getWarn() == 3) {
                 festivalWarnRepository.deleteFestivalWarns(festivalReview.getReviewId());
                 festivalReviewRepository.delete(festivalReview);
-                return "신고 3번이 누적되어 자동 삭제되었습니다.";
             }
-        } else if (festivalWarn.isPresent()) {
-            return "이미 신고한 리뷰입니다.";
         }
-
-        return "신고가 완료되었습니다.";
+        if (festivalWarn.isPresent()) {
+            throw new CustomException(ALREADY_WARN_REVIEW);
+        }
     }
 
     public List<ReviewDto> getFestivalReviews(Long festivalId) {
