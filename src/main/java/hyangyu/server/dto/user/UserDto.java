@@ -36,7 +36,6 @@ public class UserDto {
 	
 	private String token;
 	
-	@Size(max = 50)
 	private String image;
 	
 	private Set<AuthorityDto> authorityDtoSet;

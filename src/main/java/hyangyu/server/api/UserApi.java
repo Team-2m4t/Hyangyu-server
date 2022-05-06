@@ -4,9 +4,15 @@ import hyangyu.server.dto.user.ModificationDto;
 import hyangyu.server.dto.ResponseDto;
 import hyangyu.server.dto.user.UserDto;
 import hyangyu.server.service.UserService;
+import lombok.RequiredArgsConstructor;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import hyangyu.server.aws.S3Uploader;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -14,13 +20,12 @@ import javax.validation.Valid;
 import java.io.IOException;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/user")
 public class UserApi {
     private final UserService userService;
+    private final S3Uploader s3Uploader;
 
-    public UserApi(UserService userService) {
-        this.userService = userService;
-    }
 
     @PostMapping("/test-redirect")
     public void testRedirect(HttpServletResponse response) throws IOException {
@@ -53,6 +58,33 @@ public class UserApi {
     	String modifiedUsername = user.getUsername();
     	return ResponseEntity.ok(userService.modifyUsername(userDto, modifiedUsername));
     }
+    
+    @PostMapping("/image")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
+    public ResponseEntity<ResponseDto> uploadProfileImage(HttpServletRequest request, @RequestParam("images")MultipartFile multipartFile) throws IOException {
+    	UserDto userDto = userService.getMyUserWithAuthorities();
+    	if(userDto.getImage() != null)
+    		s3Uploader.delete(userDto.getImage());
+    	String imgurl = s3Uploader.upload(multipartFile, "static");
+    	return ResponseEntity.ok(userService.modifyImg(userDto.getEmail(), imgurl));
+    }
+    
+    /*@DeleteMapping("/image")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
+    public ResponseEntity<ResponseDto> deleteProfileImage(HttpServletRequest request) throws IOException {
+    	UserDto userDto = userService.getMyUserWithAuthorities();
+    	s3Uploader.delete(userDto.getImage());
+    	return ResponseEntity.ok(new ResponseDto(HttpStatus.OK.value(),"프로필 이미지가 정상적으로 삭제되었습니다."));
+    }*/
+    
+    @GetMapping("/image")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
+    public ResponseEntity<ResponseDto> getProfileImage(HttpServletRequest request){
+    	UserDto userDto = userService.getMyUserWithAuthorities();
+    	String imgPath = s3Uploader.getThumbnailPath(userDto.getImage());
+    	return ResponseEntity.ok(new ResponseDto(HttpStatus.OK.value(), imgPath));
+    }
+  
     
     @PostMapping("/password")
     public ResponseEntity<ResponseDto> modifyPassword(@RequestBody ModificationDto user){
