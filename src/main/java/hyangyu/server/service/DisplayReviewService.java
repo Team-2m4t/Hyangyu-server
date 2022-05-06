@@ -84,32 +84,30 @@ public class DisplayReviewService {
         displayReview.ifPresent(displayReviewRepository::delete);
     }
 
-    public Optional<DisplayReview> findReview(Long reviewId) {
-        return displayReviewRepository.findById(reviewId);
-    }
+    public void accuseDisplayReview(Long reviewId) {
+        User user = getUser();
 
-    public String accuseDisplayReview(DisplayReview displayReview, Long userId) {
-        Optional<User> user = userRepository.findById(userId);
-        if (userId.equals(displayReview.getUser().getUserId())) {
-            return "내가 쓴 리뷰는 신고할 수 없습니다.";
+        DisplayReview displayReview = displayReviewRepository.findById(reviewId)
+                .orElseThrow(() -> new CustomException(REVIEW_NOT_FOUND));
+
+        if (user.equals(displayReview.getUser())) {
+            throw new CustomException(ACCUSE_DENIED);
         }
 
-        Optional<DisplayWarn> displayWarn = Optional.ofNullable(displayWarnRepository.getDisplayWarn(displayReview.getReviewId(), userId));
-        if (displayWarn.isEmpty() && user.isPresent()) {
-            DisplayWarn warn = DisplayWarn.createDisplayWarn(displayReview, user.get());
+        Optional<DisplayWarn> displayWarn = displayWarnRepository.getDisplayWarn(reviewId, user.getUserId());
+        if (displayWarn.isEmpty()) {
+            DisplayWarn warn = DisplayWarn.createDisplayWarn(displayReview, user);
             displayWarnRepository.save(warn);
 
             displayReview.increaseWarn();
             if (displayReview.getWarn() == 3) {
                 displayWarnRepository.deleteDisplayWarns(displayReview.getReviewId());
                 displayReviewRepository.delete(displayReview);
-                return "신고 3번이 누적되어 자동 삭제되었습니다.";
             }
-        } else if (displayWarn.isPresent()) {
-            return "이미 신고한 리뷰입니다.";
         }
-
-        return "신고가 완료되었습니다.";
+        if (displayWarn.isPresent()) {
+            throw new CustomException(ALREADY_WARN_REVIEW);
+        }
     }
 
     public List<ReviewDto> getDisplayReviews(Long displayId) {
