@@ -1,9 +1,9 @@
 package hyangyu.server.service;
 
 import hyangyu.server.domain.*;
-import hyangyu.server.dto.review.MyReviewDto;
 import hyangyu.server.dto.review.RequestReviewDto;
 import hyangyu.server.dto.review.ReviewDto;
+import hyangyu.server.dto.review.ReviewListResponseDto;
 import hyangyu.server.exception.CustomException;
 import hyangyu.server.jwt.SecurityUtil;
 import hyangyu.server.repository.FairRepository;
@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static hyangyu.server.constants.ExceptionCode.*;
 
@@ -107,12 +108,16 @@ public class FairReviewService {
         }
     }
 
-    public List<MyReviewDto> getMyFairReviews(Long userId) {
-        return fairReviewRepository.getMyFairReviews(userId);
-    }
+    public ReviewListResponseDto getFairReviews(Long fairId) {
+        User user = getUser();
 
-    public List<ReviewDto> getFairReviews(Long fairId) {
-        return fairReviewRepository.getFairReviews(fairId);
+        Fair fair = getFair(fairId);
+
+        List<ReviewDto> reviews = fairReviewRepository.findAllByFairOrderByCreateTimeDesc(fair).stream()
+                .map(review -> ReviewDto.of(review.getReviewId(), review.getUser().getImage(), review.getUser().getUsername(), review.getCreateTime(), review.getContent(), review.getScore()))
+                .collect(Collectors.toList());
+
+        return ReviewListResponseDto.of(reviews);
     }
 
     private User getUser() {

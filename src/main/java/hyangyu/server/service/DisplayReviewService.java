@@ -4,9 +4,9 @@ import hyangyu.server.domain.Display;
 import hyangyu.server.domain.DisplayReview;
 import hyangyu.server.domain.DisplayWarn;
 import hyangyu.server.domain.User;
-import hyangyu.server.dto.review.MyReviewDto;
 import hyangyu.server.dto.review.RequestReviewDto;
 import hyangyu.server.dto.review.ReviewDto;
+import hyangyu.server.dto.review.ReviewListResponseDto;
 import hyangyu.server.exception.CustomException;
 import hyangyu.server.jwt.SecurityUtil;
 import hyangyu.server.repository.DisplayRepository;
@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static hyangyu.server.constants.ExceptionCode.*;
 
@@ -110,12 +111,16 @@ public class DisplayReviewService {
         }
     }
 
-    public List<ReviewDto> getDisplayReviews(Long displayId) {
-        return displayReviewRepository.getDisplayReviews(displayId);
-    }
+    public ReviewListResponseDto getDisplayReviews(Long displayId) {
+        User user = getUser();
 
-    public List<MyReviewDto> getMyDisplayReviews(Long userId) {
-        return displayReviewRepository.getMyDisplayReviews(userId);
+        Display display = getDisplay(displayId);
+
+        List<ReviewDto> reviews = displayReviewRepository.findAllByDisplayOrderByCreateTimeDesc(display).stream()
+                .map(review -> ReviewDto.of(review.getReviewId(), review.getUser().getImage(), review.getUser().getUsername(), review.getCreateTime(), review.getContent(), review.getScore()))
+                .collect(Collectors.toList());
+
+        return ReviewListResponseDto.of(reviews);
     }
 
     private User getUser() {
