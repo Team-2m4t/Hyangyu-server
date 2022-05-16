@@ -1,18 +1,11 @@
 package hyangyu.server.api;
 
-import hyangyu.server.domain.*;
-import hyangyu.server.dto.*;
 import hyangyu.server.dto.review.*;
-import hyangyu.server.dto.user.UserDto;
 import hyangyu.server.exception.CustomException;
 import hyangyu.server.service.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Optional;
 
 import static hyangyu.server.constants.ExceptionCode.EVENT_NOT_FOUND;
 import static hyangyu.server.constants.SuccessCode.*;
@@ -25,10 +18,6 @@ public class ReviewApi {
     private final DisplayReviewService displayReviewService;
     private final FairReviewService fairReviewService;
     private final FestivalReviewService festivalReviewService;
-    private final DisplayService displayService;
-    private final FairService fairService;
-    private final FestivalService festivalService;
-    private final UserService userService;
 
     @PostMapping("/review/display/{displayId}")
     public ResponseEntity<ReviewResponse> saveDisplayReview(@PathVariable Long displayId, @RequestBody RequestReviewDto requestReviewDto) throws Exception {
@@ -113,61 +102,40 @@ public class ReviewApi {
     }
 
     @GetMapping("/show/review/display/{displayId}")
-    public ResponseEntity getDisplayReviews(@PathVariable Long displayId) throws Exception {
-        //전시 검색
-        Optional<Display> display = displayService.findOne(displayId);
-        if (display.isEmpty()) {
-            return new ResponseEntity(new ErrorDto(404, "잘못된 전시 번호입니다."), HttpStatus.BAD_REQUEST);
-        }
+    public ResponseEntity<ReviewListResponse> getDisplayReviews(@PathVariable Long displayId) throws Exception {
+        ReviewListResponseDto response = displayReviewService.getDisplayReviews(displayId);
 
-        List<ReviewDto> displayReviews = displayReviewService.getDisplayReviews(displayId);
-        ShowReviewsDto showReviewsDto = new ShowReviewsDto(displayReviews);
-        ReviewsResponseDto reviewResponseDto = new ReviewsResponseDto(200, showReviewsDto);
-        return new ResponseEntity(reviewResponseDto, HttpStatus.OK);
+        return ReviewListResponse.newResponse(REVIEW_READ_SUCCESS, response);
     }
 
     @GetMapping("/show/review/fair/{fairId}")
-    public ResponseEntity getFairReviews(@PathVariable Long fairId) throws Exception {
-        //전시 검색
-        Optional<Fair> fair = fairService.findOne(fairId);
-        if (fair.isEmpty()) {
-            return new ResponseEntity(new ErrorDto(404, "잘못된 박람회 번호입니다."), HttpStatus.BAD_REQUEST);
-        }
+    public ResponseEntity<ReviewListResponse> getFairReviews(@PathVariable Long fairId) throws Exception {
+        ReviewListResponseDto response = fairReviewService.getFairReviews(fairId);
 
-        List<ReviewDto> fairReviews = fairReviewService.getFairReviews(fairId);
-        ShowReviewsDto showReviewsDto = new ShowReviewsDto(fairReviews);
-        ReviewsResponseDto reviewResponseDto = new ReviewsResponseDto(200, showReviewsDto);
-        return new ResponseEntity(reviewResponseDto, HttpStatus.OK);
+        return ReviewListResponse.newResponse(REVIEW_READ_SUCCESS, response);
     }
 
     @GetMapping("/show/review/festival/{festivalId}")
-    public ResponseEntity getFestivalReviews(@PathVariable Long festivalId) throws Exception {
-        //전시 검색
-        Optional<Festival> festival = festivalService.findOne(festivalId);
-        if (festival.isEmpty()) {
-            return new ResponseEntity(new ErrorDto(404, "잘못된 페스티벌 번호입니다."), HttpStatus.BAD_REQUEST);
-        }
+    public ResponseEntity<ReviewListResponse> getFestivalReviews(@PathVariable Long festivalId) throws Exception {
+        ReviewListResponseDto response = festivalReviewService.getFestivalReviews(festivalId);
 
-        List<ReviewDto> festivalReviews = festivalReviewService.getFestivalReviews(festivalId);
-        ShowReviewsDto showReviewsDto = new ShowReviewsDto(festivalReviews);
-        ReviewsResponseDto reviewResponseDto = new ReviewsResponseDto(200, showReviewsDto);
-        return new ResponseEntity(reviewResponseDto, HttpStatus.OK);
+        return ReviewListResponse.newResponse(REVIEW_READ_SUCCESS, response);
     }
 
-    @GetMapping("/myreview")
-    public ResponseEntity getMyReviews() throws Exception {
-        //사용자 검색
-        UserDto user = userService.getMyUserWithAuthorities();
-        if (user == null) {
-            return new ResponseEntity(new ErrorDto(401, "유효하지 않은 사용자입니다."), HttpStatus.BAD_REQUEST);
-        }
-
-        List<MyReviewDto> myDisplayReviews = displayReviewService.getMyDisplayReviews(user.getUserId());
-        List<MyReviewDto> myFairReviews = fairReviewService.getMyFairReviews(user.getUserId());
-        List<MyReviewDto> myFestivalReviews = festivalReviewService.getMyFestivalReviews(user.getUserId());
-
-        MyReviewsDto myReviewsDto = new MyReviewsDto(myDisplayReviews, myFairReviews, myFestivalReviews);
-        MyReviewsResponseDto myReviewsResponseDto = new MyReviewsResponseDto(200, myReviewsDto);
-        return new ResponseEntity(myReviewsResponseDto, HttpStatus.OK);
-    }
+//    @GetMapping("/myreview")
+//    public ResponseEntity getMyReviews() throws Exception {
+//        //사용자 검색
+//        UserDto user = userService.getMyUserWithAuthorities();
+//        if (user == null) {
+//            return new ResponseEntity(new ErrorDto(401, "유효하지 않은 사용자입니다."), HttpStatus.BAD_REQUEST);
+//        }
+//
+//        List<MyReviewDto> myDisplayReviews = displayReviewService.getMyDisplayReviews(user.getUserId());
+//        List<MyReviewDto> myFairReviews = fairReviewService.getMyFairReviews(user.getUserId());
+//        List<MyReviewDto> myFestivalReviews = festivalReviewService.getMyFestivalReviews(user.getUserId());
+//
+//        MyReviewsDto myReviewsDto = new MyReviewsDto(myDisplayReviews, myFairReviews, myFestivalReviews);
+//        MyReviewsResponseDto myReviewsResponseDto = new MyReviewsResponseDto(200, myReviewsDto);
+//        return new ResponseEntity(myReviewsResponseDto, HttpStatus.OK);
+//    }
 }

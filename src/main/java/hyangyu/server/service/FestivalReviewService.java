@@ -1,9 +1,9 @@
 package hyangyu.server.service;
 
 import hyangyu.server.domain.*;
-import hyangyu.server.dto.review.MyReviewDto;
 import hyangyu.server.dto.review.RequestReviewDto;
 import hyangyu.server.dto.review.ReviewDto;
+import hyangyu.server.dto.review.ReviewListResponseDto;
 import hyangyu.server.exception.CustomException;
 import hyangyu.server.jwt.SecurityUtil;
 import hyangyu.server.repository.FestivalRepository;
@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static hyangyu.server.constants.ExceptionCode.*;
 
@@ -107,12 +108,16 @@ public class FestivalReviewService {
         }
     }
 
-    public List<ReviewDto> getFestivalReviews(Long festivalId) {
-        return festivalReviewRepository.getFestivalReviews(festivalId);
-    }
+    public ReviewListResponseDto getFestivalReviews(Long festivalId) {
+        User user = getUser();
 
-    public List<MyReviewDto> getMyFestivalReviews(Long userId) {
-        return festivalReviewRepository.getMyFestivalReviews(userId);
+        Festival festival = getFestival(festivalId);
+
+        List<ReviewDto> reviews = festivalReviewRepository.findAllByFestivalOrderByCreateTimeDesc(festival).stream()
+                .map(review -> ReviewDto.of(review.getReviewId(), review.getUser().getImage(), review.getUser().getUsername(), review.getCreateTime(), review.getContent(), review.getScore()))
+                .collect(Collectors.toList());
+
+        return ReviewListResponseDto.of(reviews);
     }
 
     private User getUser() {
