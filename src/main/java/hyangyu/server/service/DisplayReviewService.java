@@ -4,15 +4,13 @@ import hyangyu.server.domain.Display;
 import hyangyu.server.domain.DisplayReview;
 import hyangyu.server.domain.DisplayWarn;
 import hyangyu.server.domain.User;
+import hyangyu.server.dto.review.MyReviewResponseDto;
 import hyangyu.server.dto.review.RequestReviewDto;
 import hyangyu.server.dto.review.ReviewDto;
 import hyangyu.server.dto.review.ReviewListResponseDto;
 import hyangyu.server.exception.CustomException;
 import hyangyu.server.jwt.SecurityUtil;
-import hyangyu.server.repository.DisplayRepository;
-import hyangyu.server.repository.DisplayReviewRepository;
-import hyangyu.server.repository.DisplayWarnRepository;
-import hyangyu.server.repository.UserRepository;
+import hyangyu.server.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +28,8 @@ import static hyangyu.server.constants.ExceptionCode.*;
 public class DisplayReviewService {
 
     private final DisplayReviewRepository displayReviewRepository;
+    private final FairReviewRepository fairReviewRepository;
+    private final FestivalReviewRepository festivalReviewRepository;
     private final DisplayWarnRepository displayWarnRepository;
     private final UserRepository userRepository;
     private final DisplayRepository displayRepository;
@@ -121,6 +121,23 @@ public class DisplayReviewService {
                 .collect(Collectors.toList());
 
         return ReviewListResponseDto.of(reviews);
+    }
+
+
+    public MyReviewResponseDto getMyReviews() {
+        User user = getUser();
+
+        List<ReviewDto> displayReviews = displayReviewRepository.findAllByUserOrderByReviewIdDesc(user).stream()
+                .map(review -> ReviewDto.of(review.getReviewId(), review.getUser().getImage(), review.getUser().getUsername(), review.getCreateTime(), review.getContent(), review.getScore()))
+                .collect(Collectors.toList());
+        List<ReviewDto> fairReviews = fairReviewRepository.findAllByUserOrderByReviewIdDesc(user).stream()
+                .map(review -> ReviewDto.of(review.getReviewId(), review.getUser().getImage(), review.getUser().getUsername(), review.getCreateTime(), review.getContent(), review.getScore()))
+                .collect(Collectors.toList());
+        List<ReviewDto> festivalReviews = festivalReviewRepository.findAllByUserOrderByReviewIdDesc(user).stream()
+                .map(review -> ReviewDto.of(review.getReviewId(), review.getUser().getImage(), review.getUser().getUsername(), review.getCreateTime(), review.getContent(), review.getScore()))
+                .collect(Collectors.toList());
+
+        return MyReviewResponseDto.of(displayReviews, fairReviews, festivalReviews);
     }
 
     private User getUser() {

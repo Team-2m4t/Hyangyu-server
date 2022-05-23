@@ -2,6 +2,7 @@ package hyangyu.server.repository;
 
 import hyangyu.server.domain.Festival;
 import hyangyu.server.domain.FestivalReview;
+import hyangyu.server.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -16,4 +17,6 @@ public interface FestivalReviewRepository extends JpaRepository<FestivalReview, 
     FestivalReview getFestivalReview(Long festivalId, Long userId);
 
     List<FestivalReview> findAllByFestivalOrderByCreateTimeDesc(Festival festival);
+
+    List<FestivalReview> findAllByUserOrderByReviewIdDesc(User user);
 }

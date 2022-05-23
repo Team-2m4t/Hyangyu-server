@@ -2,6 +2,7 @@ package hyangyu.server.repository;
 
 import hyangyu.server.domain.Fair;
 import hyangyu.server.domain.FairReview;
+import hyangyu.server.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -16,4 +17,6 @@ public interface FairReviewRepository extends JpaRepository<FairReview, Long> {
     FairReview getFairReview(Long fairId, Long userId);
 
     List<FairReview> findAllByFairOrderByCreateTimeDesc(Fair fair);
+
+    List<FairReview> findAllByUserOrderByReviewIdDesc(User user);
 }
